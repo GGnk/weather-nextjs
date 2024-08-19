@@ -13,6 +13,15 @@ export interface WeatherResponse {
     pressure: string;
     wind_speed: string;
   };
+  hourly: {
+    time: string;
+    temperature: string;
+    humidity: string;
+    apparent_temperature: string;
+    precipitation: string;
+    weather_code: number;
+    wind_speed: string;
+  }[];
 }
 
 export const fetchWeatherCurrentData = async (latitude: number, longitude: number): Promise<WeatherResponse> => {

@@ -1,7 +1,7 @@
 import { GeoResponse } from '@/shared/api/geo';
 import { WeatherResponse } from '@/shared/api/weather';
 import { getWeatherDescription } from '@/shared/utils/getWeatherDescription';
-import { format } from 'date-fns/format';
+import { DateFormat, formatDate } from '@/shared/utils/time';
 import { FC } from 'react';
 
 interface IProps
@@ -13,14 +13,20 @@ interface IProps
 }
 const WeatherCurrentCard: FC<IProps> = (props) => {
   const weatherDesc = getWeatherDescription(props.weather_code);
+  const textCity = `Погода в ${props.address?.city}, ${props.address?.country}`;
+  const isCityEnable = !!props.address?.city;
+
   return (
-    <div className="min-w-96 max-w-lg mx-auto bg-white rounded-lg shadow-md p-4">
+    <div className="min-w-80 max-w-lg mx-auto bg-white rounded-lg shadow-md p-4">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-bold">
-            Погода в {props.address?.city}, {props.address?.country}
-          </h2>
-          <p className="text-gray-600">Сейчас {format(new Date(props.time + 'Z'), 'HH:mm')}.</p>
+          {isCityEnable ? (
+            <h2 className="text-xl font-bold">{textCity}</h2>
+          ) : (
+            <div className="h-8 bg-slate-300 animate-pulse rounded"></div>
+          )}
+
+          <p className="text-gray-600">Сейчас {formatDate(props.time, DateFormat.HourMinute)}.</p>
         </div>
         <span className="text-7xl">{weatherDesc.icon}</span>
       </div>
