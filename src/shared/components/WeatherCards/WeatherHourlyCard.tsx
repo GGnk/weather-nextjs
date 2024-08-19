@@ -19,7 +19,7 @@ const WeatherHourlyCard: FC<IProps> = (props) => {
   const date = formatDate(props.time, DateFormat.DayMonth);
   const day = formatDate(props.time, DateFormat.HourMinute);
   return (
-    <div className="flex-shrink-0 p-4 bg-white rounded-lg shadow-md w-44 text-center">
+    <div className="flex-shrink-0 p-4 bg-white rounded-lg shadow-md w-44 text-center h-full">
       {!isSameDay(new Date(), new Date(props.time)) && <div className="text-gray-500 text-sm font-bold">{date}</div>}
       <div className="text-gray-500 text-lg font-bold">{day}</div>
       <div className="my-2 flex justify-center items-center">

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
 import type { WeatherResponse } from '@/shared/api/weather';
 import { roundToNearestInteger } from '@/shared/utils/numbers';
 import { IWeatherApiResponse } from './types';
@@ -24,13 +23,19 @@ export async function GET(request: Request) {
   });
 
   try {
-    const response = await axios.get<IWeatherApiResponse>(`${API_URL}?${query.toString()}`);
-    const { current, current_units, hourly, hourly_units } = response.data;
+    const response = await fetch(`${API_URL}?${query.toString()}`);
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = (await response.json()) as IWeatherApiResponse;
+    const { current, current_units, hourly, hourly_units } = data;
     const currentHour = new Date();
 
     const result: WeatherResponse = {
-      latitude: response.data.latitude,
-      longitude: response.data.longitude,
+      latitude: data.latitude,
+      longitude: data.longitude,
       current: {
         time: ensureUtcOffset(current.time),
         temperature: `${roundToNearestInteger(current.temperature_2m)} ${current_units.temperature_2m}`,

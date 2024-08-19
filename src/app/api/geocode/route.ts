@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
 import { GeoResponse } from '@/shared/api/geo';
 
 interface IGeoApiResponse {
@@ -54,12 +53,17 @@ export async function GET(request: Request) {
 
   const url = `${baseUrl}?${query.toString()}`;
   try {
-    const response = await axios.get<IGeoApiResponse>(url);
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const data = (await response.json()) as IGeoApiResponse;
     const result: GeoResponse = {
-      latitude: response.data.lat,
-      longitude: response.data.lon,
-      display_name: response.data.display_name,
-      address: response.data.address,
+      latitude: data.lat,
+      longitude: data.lon,
+      display_name: data.display_name,
+      address: data.address,
     };
     return NextResponse.json(result);
   } catch (error) {
