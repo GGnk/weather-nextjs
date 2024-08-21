@@ -37,3 +37,8 @@ export const WEATHER_DESCRIPTIONS: WeatherMapping = {
   96: { description: 'Thunderstorm with slight hail', icon: '⛈' },
   99: { description: 'Thunderstorm with heavy hail', icon: '⛈' },
 };
+
+export enum WEATHER_OPTIONS {
+  CURRENT = 'current',
+  DAILY = 'daily',
+}

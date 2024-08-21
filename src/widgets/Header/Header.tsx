@@ -1,5 +1,6 @@
 'use client';
 
+import { WEATHER_OPTIONS } from '@/shared/constants';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -8,13 +9,13 @@ export default function Header() {
   const links = [
     {
       name: 'Current',
-      href: '/current',
-      isActive: pathName === '/current',
+      href: `/${WEATHER_OPTIONS.CURRENT}`,
+      isActive: pathName === `/${WEATHER_OPTIONS.CURRENT}`,
     },
     {
       name: 'Daily',
-      href: '/daily',
-      isActive: pathName === '/daily',
+      href: `/${WEATHER_OPTIONS.DAILY}`,
+      isActive: pathName === `/${WEATHER_OPTIONS.DAILY}`,
     },
   ];
 

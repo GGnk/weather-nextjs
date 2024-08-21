@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { fetchWeatherData, WeatherResponse } from '../api/weather';
+import { WEATHER_OPTIONS } from '../constants';
 
-export const useWeather = (coords: GeolocationCoordinates | null, slug?: Parameters<typeof fetchWeatherData>[2]) => {
+export const useWeather = (coords: GeolocationCoordinates | null, slug?: WEATHER_OPTIONS) => {
   const [weatherData, setWeatherData] = useState<WeatherResponse | null>(null);
 
   useEffect(() => {

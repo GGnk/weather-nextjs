@@ -3,9 +3,10 @@ import type { WeatherResponseWithCurrent, WeatherResponseWithDaily } from '@/sha
 import { roundToNearestInteger } from '@/shared/utils/numbers';
 import type { WeatherApiResponse, WeatherApiResponseWithCurrent, WeatherApiResponseWithDaily } from './types';
 import { ensureUtcOffset } from '@/shared/utils/time';
+import { WEATHER_OPTIONS } from '@/shared/constants';
 
 type Params = {
-  slug: 'current' | 'daily';
+  slug: WEATHER_OPTIONS;
 };
 
 const API_URL = process.env.WEATHER_API_URL;
@@ -14,7 +15,7 @@ export async function GET(request: Request, context: { params: Params }) {
   const slug = context.params.slug;
 
   const { searchParams } = new URL(request.url);
-  const isDailyWeather = slug === 'daily';
+  const isDailyWeather = slug === WEATHER_OPTIONS.DAILY;
   const query = new URLSearchParams({
     latitude: searchParams.get('latitude') || '',
     longitude: searchParams.get('longitude') || '',

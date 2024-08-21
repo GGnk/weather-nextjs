@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { WEATHER_OPTIONS } from '../constants';
 
 interface WeatherResponseBase {
   latitude: number;
@@ -38,7 +39,11 @@ export type WeatherResponseWithDaily = WeatherResponseBase & {
 
 export type WeatherResponse = WeatherResponseWithCurrent | WeatherResponseWithDaily;
 
-export const fetchWeatherData = async (latitude: number, longitude: number, slug: 'current' | 'daily' = 'current') => {
+export const fetchWeatherData = async (
+  latitude: number,
+  longitude: number,
+  slug: WEATHER_OPTIONS = WEATHER_OPTIONS.CURRENT,
+) => {
   const baseUrl = `/api/weather/${slug}`;
   const query = new URLSearchParams({
     latitude: latitude.toString(),

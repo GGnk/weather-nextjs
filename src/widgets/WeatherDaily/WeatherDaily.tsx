@@ -2,12 +2,13 @@
 
 import { WeatherResponseWithDaily } from '@/shared/api/weather';
 import { WeatherDailyCard } from '@/shared/components/WeatherCards';
+import { WEATHER_OPTIONS } from '@/shared/constants';
 import { useGeolocation } from '@/shared/hooks/geo';
 import { useWeather } from '@/shared/hooks/weather';
 
 const WeatherDaily = () => {
   const { coords } = useGeolocation();
-  const weatherData = useWeather(coords, 'daily');
+  const weatherData = useWeather(coords, WEATHER_OPTIONS.DAILY);
 
   if (!weatherData) return <p>Loading...</p>;
   const dailyWeather = (weatherData as WeatherResponseWithDaily).daily;
