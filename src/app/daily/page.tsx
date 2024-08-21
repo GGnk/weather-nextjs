@@ -1,9 +1,9 @@
-import { WeatherForecast } from '@/widgets/WeatherDisplay';
+import { WeatherDaily } from '@/widgets/WeatherDaily';
 
 export default function Current() {
   return (
     <main className="container mx-auto">
-      <WeatherForecast />
+      <WeatherDaily />
     </main>
   );
 }

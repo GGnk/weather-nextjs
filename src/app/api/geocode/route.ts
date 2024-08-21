@@ -67,6 +67,6 @@ export async function GET(request: Request) {
     };
     return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json({ error: 'Error fetching weather data' }, { status: 500 });
+    return NextResponse.json({ error: 'Error fetching weather data', data: error }, { status: 500 });
   }
 }

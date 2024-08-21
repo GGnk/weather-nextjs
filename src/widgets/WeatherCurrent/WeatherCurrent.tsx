@@ -1,53 +1,22 @@
 'use client';
-
-import { useEffect, useState } from 'react';
+import { WeatherResponseWithCurrent } from '@/shared/api/weather';
 import { WeatherCurrentCard } from '@/shared/components/WeatherCards';
-import { fetchWeatherCurrentData, WeatherResponse } from '@/shared/api/weather';
-import { fetchGeoData, GeoResponse } from '@/shared/api/geo';
+
 import { WeatherHourlyCarousel } from '@/shared/components/WeatherHourlyCarousel';
+import { useGeolocation } from '@/shared/hooks/geo';
+import { useWeather } from '@/shared/hooks/weather';
 
 const WeatherCurrent = () => {
-  const [coords, setСoords] = useState<GeolocationCoordinates | null>(null);
-  const [weatherData, setWeatherData] = useState<WeatherResponse | null>(null);
-  const [address, setAddress] = useState<GeoResponse['address'] | undefined>();
-
-  useEffect(() => {
-    if (coords) return;
-
-    navigator.geolocation.getCurrentPosition(
-      (geo) => {
-        setСoords(geo.coords);
-      },
-      (error) => {
-        console.error(error);
-      },
-    );
-  }, [coords]);
-
-  useEffect(() => {
-    if (weatherData || !coords) return;
-
-    fetchWeatherCurrentData(coords.latitude, coords.longitude).then((result) => {
-      console.log('[fetchWeatherCurrentData] result: ', result);
-      setWeatherData(result);
-    });
-  }, [coords, weatherData]);
-
-  useEffect(() => {
-    if (address || !coords) return;
-    fetchGeoData(coords.latitude, coords.longitude).then((result) => {
-      console.log('[fetchGeoData] result: ', result);
-      setAddress(result.address);
-    });
-  }, [coords, address]);
+  const { coords, address } = useGeolocation();
+  const weatherData = useWeather(coords);
 
   if (!weatherData) return <p>Loading...</p>;
-
+  const { current, hourly } = weatherData as WeatherResponseWithCurrent;
   return (
     <div className="flex flex-col gap-4 mx-5">
-      <WeatherCurrentCard {...weatherData.current} address={address} />
+      <WeatherCurrentCard {...current} address={address} />
       <div className="w-full justify-between">
-        <WeatherHourlyCarousel listHourly={weatherData.hourly} />
+        <WeatherHourlyCarousel listHourly={hourly} />
       </div>
     </div>
   );

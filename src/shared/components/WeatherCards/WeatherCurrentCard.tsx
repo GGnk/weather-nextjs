@@ -1,12 +1,12 @@
 import { GeoResponse } from '@/shared/api/geo';
-import { WeatherResponse } from '@/shared/api/weather';
+import { WeatherResponseWithCurrent } from '@/shared/api/weather';
 import { getWeatherDescription } from '@/shared/utils/getWeatherDescription';
 import { DateFormat, formatDate } from '@/shared/utils/time';
 import { FC } from 'react';
 
 interface IProps
   extends Pick<
-    WeatherResponse['current'],
+    WeatherResponseWithCurrent['current'],
     'time' | 'temperature' | 'humidity' | 'apparent_temperature' | 'is_day' | 'weather_code' | 'pressure' | 'wind_speed'
   > {
   address?: GeoResponse['address'];

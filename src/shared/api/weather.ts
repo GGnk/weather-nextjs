@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-export interface WeatherResponse {
+interface WeatherResponseBase {
   latitude: number;
   longitude: number;
+}
+export type WeatherResponseWithCurrent = WeatherResponseBase & {
   current: {
     time: string;
     temperature: string;
@@ -22,10 +24,22 @@ export interface WeatherResponse {
     weather_code: number;
     wind_speed: string;
   }[];
-}
+};
 
-export const fetchWeatherCurrentData = async (latitude: number, longitude: number): Promise<WeatherResponse> => {
-  const baseUrl = '/api/weather/current';
+export type WeatherResponseWithDaily = WeatherResponseBase & {
+  daily: {
+    time: string;
+    temperature_2m_min: string;
+    temperature_2m_max: string;
+    weather_code: number;
+    wind_speed_10m_max: string;
+  }[];
+};
+
+export type WeatherResponse = WeatherResponseWithCurrent | WeatherResponseWithDaily;
+
+export const fetchWeatherData = async (latitude: number, longitude: number, slug: 'current' | 'daily' = 'current') => {
+  const baseUrl = `/api/weather/${slug}`;
   const query = new URLSearchParams({
     latitude: latitude.toString(),
     longitude: longitude.toString(),

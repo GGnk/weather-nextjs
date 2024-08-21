@@ -7,9 +7,9 @@ import type { FC } from 'react';
 interface IProps {
   time: string;
   weather_code: number;
-  temperature_2m_max: number;
-  temperature_2m_min: number;
-  wind_speed_10m_max: number;
+  temperature_2m_max: string;
+  temperature_2m_min: string;
+  wind_speed_10m_max: string;
 }
 
 const WeatherDailyCard: FC<IProps> = (data) => {
@@ -32,15 +32,15 @@ const WeatherDailyCard: FC<IProps> = (data) => {
         <div className="flex flex-row flex-wrap justify-around gap-2 mt-4 items-center">
           <div className="flex flex-col items-center">
             <div className="font-medium text-sm">Wind</div>
-            <div className="text-sm text-gray-500">{data.wind_speed_10m_max}k/h</div>
+            <div className="text-sm text-gray-500">{data.wind_speed_10m_max}</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="font-medium text-sm">Min Temp</div>
-            <div className="text-sm text-gray-500">{data.temperature_2m_min}°C</div>
+            <div className="text-sm text-gray-500">{data.temperature_2m_min}</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="font-medium text-sm">Max Temp</div>
-            <div className="text-sm text-gray-500">{data.temperature_2m_max}°C</div>
+            <div className="text-sm text-gray-500">{data.temperature_2m_max}</div>
           </div>
         </div>
       </div>
