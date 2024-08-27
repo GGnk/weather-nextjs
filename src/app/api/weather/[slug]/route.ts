@@ -48,6 +48,7 @@ export async function GET(request: Request, context: { params: Params }) {
     const data = (await response.json()) as WeatherApiResponse;
     const currentHour = new Date();
     let result = {
+      request_time: new Date().toISOString(),
       latitude: data.latitude,
       longitude: data.longitude,
     };

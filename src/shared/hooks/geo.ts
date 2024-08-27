@@ -1,32 +1,56 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { fetchGeoData, GeoResponse } from '../api/geo';
+import { create } from 'zustand';
 
-export const useGeolocation = () => {
-  const [coords, setСoords] = useState<GeolocationCoordinates | null>(null);
-  const [address, setAddress] = useState<GeoResponse['address'] | undefined>();
+interface GeoContextType {
+  coords: GeolocationCoordinates | null;
+  address: GeoResponse['address'] | undefined;
+  fetchGeolocation: () => void;
+  fetchAddress: (latitude: number, longitude: number) => void;
+}
 
-  useEffect(() => {
-    if (coords) return;
-
+export const useGeoStore = create<GeoContextType>((set) => ({
+  coords: null,
+  address: undefined,
+  fetchGeolocation: () => {
     navigator.geolocation.getCurrentPosition(
       (geo) => {
-        setСoords(geo.coords);
+        set({ coords: geo.coords });
       },
       (error) => {
         console.error(error);
       },
     );
-  }, [coords]);
+  },
+  fetchAddress: async (latitude, longitude) => {
+    try {
+      const result = await fetchGeoData(latitude, longitude);
+      console.log('[fetchGeoData] result: ', result);
+      set({ address: result.address });
+    } catch (error) {
+      console.error('Error fetching address:', error);
+    }
+  },
+}));
+
+export const selectorGeo = (state: GeoContextType) => ({ coords: state.coords, address: state.address });
+export const selectorGeoCoords = (state: GeoContextType) => ({ coords: state.coords });
+export const selectorGeoAddress = (state: GeoContextType) => ({ address: state.address });
+
+export const useStartGeolocation = () => {
+  const { coords, address, fetchGeolocation, fetchAddress } = useGeoStore();
 
   useEffect(() => {
-    if (address || !coords) return;
-    fetchGeoData(coords.latitude, coords.longitude).then((result) => {
-      console.log('[fetchGeoData] result: ', result);
-      setAddress(result.address);
-    });
-  }, [coords, address]);
+    if (!coords) {
+      fetchGeolocation();
+    }
+  }, [coords, fetchGeolocation]);
 
-  return { coords, address };
+  useEffect(() => {
+    if (coords && !address) {
+      fetchAddress(coords.latitude, coords.longitude);
+    }
+  }, [coords, address, fetchAddress]);
 };

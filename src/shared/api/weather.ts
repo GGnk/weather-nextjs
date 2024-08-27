@@ -2,6 +2,7 @@ import axios from 'axios';
 import { WEATHER_OPTIONS } from '../constants';
 
 interface WeatherResponseBase {
+  request_time: string;
   latitude: number;
   longitude: number;
 }

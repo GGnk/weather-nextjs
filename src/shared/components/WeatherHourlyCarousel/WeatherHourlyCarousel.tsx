@@ -1,5 +1,3 @@
-'use client';
-
 import { WeatherHourlyCard } from '@/shared/components/WeatherCards';
 import React from 'react';
 import { FC } from 'react';
@@ -40,11 +38,13 @@ const WeatherHourlyCarousel: FC<IProps> = ({ listHourly }) => {
   return (
     <div className="flex justify-center mx-auto items-center">
       <Carousel
+        ssr
+        deviceType="mobile"
+        centerMode
+        infinite
         responsive={responsive}
         autoPlay={true}
-        centerMode={true}
-        infinite={false}
-        containerClass="first-carousel-container container"
+        containerClass="container"
       >
         {listHourly.map((weather) => (
           <WeatherHourlyCard key={weather.time} {...weather} />

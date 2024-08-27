@@ -1,11 +1,18 @@
 'use client';
 
 import { WEATHER_OPTIONS } from '@/shared/constants';
+import { useStartGeolocation } from '@/shared/hooks/geo';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { IoIosSearch } from 'react-icons/io';
+import { IoLocationOutline, IoCalendarOutline } from 'react-icons/io5';
+import { MdOutlineNotificationsActive } from 'react-icons/md';
 
-export default function Header() {
+const Header = () => {
+  useStartGeolocation();
   const pathName = usePathname();
+
   const links = [
     {
       name: 'Current',
@@ -22,20 +29,48 @@ export default function Header() {
   const linkElements = links.map((link) => (
     <Link
       key={link.href}
-      className={`${link.isActive ? 'bg-end-rgb text-white' : 'bg-start-rgb text-bg-end-rgb'} h-12 min-w-24 text-center content-center`}
+      className={`${link.isActive ? 'bg-end-rgb text-white' : 'border-b-2 text-black'} h-12 min-w-24 text-center content-center`}
       href={link.href}
     >
       {link.name}
     </Link>
   ));
   return (
-    <header className="h-20 flex gap-5 bg-white">
-      <div className="content-center ml-5">
-        <Link href="/">
-          <h1>Weather Forecast</h1>
-        </Link>
+    <header className="header">
+      <div className="header_block">
+        <div className="text-gray-500 text-sm">
+          <Link href="/" className="flex flex-col gap-1 items-center">
+            <div className="flex items-center">
+              <IoLocationOutline />
+              <h1>Weather Forecast</h1>
+            </div>
+            <div className="flex gap-2">
+              <Image src="next.svg" alt="nextjs" width={40} height={20} />
+              &
+              <Image src="vercel.svg" alt="vercel" width={40} height={20} />
+            </div>
+          </Link>
+        </div>
+        <div className="md:flex gap-3 items-center hidden">{linkElements}</div>
+        <div className="search-block">
+          <div className="form-group">
+            <input type="search" id="searchInput" name="search" autoComplete="off" placeholder="Search here..." />
+          </div>
+          <button type="submit" className="search-btn">
+            <IoIosSearch />
+          </button>
+        </div>
+        <div className="flex space-x-2">
+          <button className="text-2xl">
+            <IoCalendarOutline />
+          </button>
+          <button className="text-2xl">
+            <MdOutlineNotificationsActive />
+          </button>
+        </div>
       </div>
-      <div className="flex gap-3 items-center">{linkElements}</div>
     </header>
   );
-}
+};
+
+export default Header;

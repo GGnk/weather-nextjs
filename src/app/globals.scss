@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 160, 203, 255;
+    --background-end-rgb: 1, 16, 82;
+  }
+}
+
+body {
+  color: #000000;
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb))
+    fixed;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-start-rgb {
+    background-color: rgb(var(--background-start-rgb));
+  }
+  .bg-end-rgb {
+    background-color: rgb(var(--background-end-rgb));
+  }
+}
+
+@layer components {
+  .header {
+    @apply bg-white rounded-b-lg;
+    padding: clamp(16px, 1.25vw, 30px);
+
+    &_block {
+      @apply flex justify-between gap-6 items-center;
+    }
+
+    & .search-block {
+      @apply hidden md:flex justify-between items-center rounded-md border border-solid border-white text-gray-600 bg-gray-100;
+      width: 35.417vw;
+      padding: 0 clamp(12px, 0.83vw, 24px);
+      height: clamp(42px, 2.917vw, 72px);
+      backdrop-filter: blur(25px);
+
+      .form-group {
+        position: relative;
+        width: 100%;
+
+        input {
+          width: 99%;
+          border: none;
+          padding-right: 0;
+          background: transparent;
+          height: auto;
+          color: #92949f;
+          padding: 0;
+
+          &:focus,
+          &:focus-visible {
+            border: none;
+            outline: none;
+            background-color: transparent;
+          }
+        }
+      }
+
+      .search-btn {
+        flex-shrink: 0;
+        border: 0;
+        background: transparent;
+        color: #92949f;
+      }
+    }
+  }
+
+  .main {
+    @apply pt-2;
+
+    & .current_hourly_block {
+      @apply grid grid-cols-1 md:grid-cols-6 md:gap-4 bg-start-rgb p-2 rounded-t-lg;
+
+      &__left {
+        @apply col-span-2 text-white p-2 rounded-lg flex flex-col justify-center;
+      }
+
+      &__right {
+        @apply col-span-4 flex justify-between items-center gap-2;
+      }
+    }
+  }
+}
