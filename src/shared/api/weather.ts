@@ -40,11 +40,7 @@ export type WeatherResponseWithDaily = WeatherResponseBase & {
 
 export type WeatherResponse = WeatherResponseWithCurrent | WeatherResponseWithDaily;
 
-export const fetchWeatherData = async (
-  latitude: number,
-  longitude: number,
-  slug: WEATHER_OPTIONS = WEATHER_OPTIONS.CURRENT,
-) => {
+export const fetchWeatherData = async (latitude: number, longitude: number, slug: WEATHER_OPTIONS) => {
   const baseUrl = `/api/weather/${slug}`;
   const query = new URLSearchParams({
     latitude: latitude.toString(),

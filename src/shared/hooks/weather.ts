@@ -32,8 +32,8 @@ export const useWeatherStore = create<WeatherState>((set, get) => ({
   fetchCurrentWeather: (coords) => {
     const request_time = get().currentWeather?.request_time;
     executeIfStale(request_time, async () => {
-      const result = await fetchWeatherData(coords.latitude, coords.longitude);
-      console.log('[fetchWeather] result: ', result);
+      const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.CURRENT);
+      console.log('[fetchCurrentWeather] result: ', result);
       set({ currentWeather: result as WeatherResponseWithCurrent });
     });
   },
@@ -41,7 +41,7 @@ export const useWeatherStore = create<WeatherState>((set, get) => ({
     const request_time = get().dailyWeather?.request_time;
     executeIfStale(request_time, async () => {
       const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.DAILY);
-      console.log('[fetchWeather] result: ', result);
+      console.log('[fetchDailyWeather] result: ', result);
       set({ dailyWeather: result as WeatherResponseWithDaily });
     });
   },

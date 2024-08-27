@@ -16,20 +16,21 @@ export async function GET(request: Request, context: { params: Params }) {
 
   const { searchParams } = new URL(request.url);
   const isDailyWeather = slug === WEATHER_OPTIONS.DAILY;
+
+  const dailyQueryParams = {
+    daily: 'temperature_2m_min,temperature_2m_max,weather_code,wind_speed_10m_max',
+    forecast_days: '14',
+  };
+
+  const currentQueryParams = {
+    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,pressure_msl,wind_speed_10m',
+    hourly: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',
+    forecast_hours: '12',
+  };
   const query = new URLSearchParams({
     latitude: searchParams.get('latitude') || '',
     longitude: searchParams.get('longitude') || '',
-    ...(isDailyWeather
-      ? {
-          daily: 'temperature_2m_min,temperature_2m_max,weather_code,wind_speed_10m_max',
-          forecast_days: '14',
-        }
-      : {
-          current:
-            'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,pressure_msl,wind_speed_10m',
-          hourly: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',
-          forecast_days: '1',
-        }),
+    ...(isDailyWeather ? dailyQueryParams : currentQueryParams),
     temperature_unit: 'celsius',
     wind_speed_unit: 'ms',
     precipitation_unit: 'mm',

@@ -41,13 +41,13 @@ const Header = () => {
         <div className="text-gray-500 text-sm">
           <Link href="/" className="flex flex-col gap-1 items-center">
             <div className="flex items-center">
-              <IoLocationOutline />
-              <h1>Weather Forecast</h1>
+              <IoLocationOutline className="w-6 h-6" />
+              <h1 className="text-xl">Weather Forecast</h1>
             </div>
             <div className="flex gap-2">
-              <Image src="next.svg" alt="nextjs" width={40} height={20} />
+              <Image src="next.svg" alt="nextjs" width={50} height={20} />
               &
-              <Image src="vercel.svg" alt="vercel" width={40} height={20} />
+              <Image src="vercel.svg" alt="vercel" width={50} height={20} />
             </div>
           </Link>
         </div>

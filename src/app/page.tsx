@@ -9,12 +9,13 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function Home() {
   const { coords } = useGeoStore(selectorGeoCoords);
-  const { fetchCurrentWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
+  const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
 
   useEffect(() => {
     if (!coords) return;
     fetchCurrentWeather(coords);
-  }, [coords, fetchCurrentWeather]);
+    fetchDailyWeather(coords);
+  }, [coords, fetchCurrentWeather, fetchDailyWeather]);
 
   return (
     <section className="py-3">
