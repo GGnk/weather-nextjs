@@ -28,11 +28,11 @@ const WeatherHourlyCard: FC<IProps> = (props) => {
       <div className="text-gray-800 text-xl">
         <span className="font-bold">{props.temperature}</span>
       </div>
-      <div className="text-gray-500">
+      <div className="text-gray-700">
         <span className="font-bold">{props.apparent_temperature}</span>
         <div>apparent temp </div>
       </div>
-      <div className="text-gray-400 mt-2">{weatherDescription.description}</div>
+      <div className="text-gray-600 mt-2">{weatherDescription.description}</div>
     </div>
   );
 };

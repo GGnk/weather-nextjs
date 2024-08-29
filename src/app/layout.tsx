@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Weather with NextJS',
+  description: 'Weather forecast service.',
 };
 
 export default function RootLayout({

@@ -1,25 +1,40 @@
 'use client';
 
-import { useEffect } from 'react';
 import { fetchGeoData, GeoResponse } from '../api/geo';
 import { create } from 'zustand';
 
-interface GeoContextType {
-  coords: GeolocationCoordinates | null;
-  address: GeoResponse['address'] | undefined;
-  fetchGeolocation: () => void;
-  fetchAddress: (latitude: number, longitude: number) => void;
+export enum LocationStatus {
+  Idle = 'idle',
+  Requesting = 'requesting',
+  Approved = 'approved',
+  Denied = 'denied',
 }
 
-export const useGeoStore = create<GeoContextType>((set) => ({
+interface GeoState {
+  coords: GeolocationCoordinates | null;
+  address: GeoResponse['address'] | undefined;
+  status: LocationStatus;
+}
+interface GeoActions {
+  fetchGeolocation: () => void;
+  fetchAddress: (latitude: number, longitude: number) => Promise<void>;
+}
+type GeoStore = GeoState & GeoActions;
+
+export const useGeoStore = create<GeoStore>((set) => ({
   coords: null,
   address: undefined,
+  status: LocationStatus.Idle,
   fetchGeolocation: () => {
+    set({ status: LocationStatus.Requesting });
     navigator.geolocation.getCurrentPosition(
       (geo) => {
-        set({ coords: geo.coords });
+        set({ coords: geo.coords, status: LocationStatus.Approved });
       },
       (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          set({ status: LocationStatus.Denied });
+        }
         console.error(error);
       },
     );
@@ -35,22 +50,6 @@ export const useGeoStore = create<GeoContextType>((set) => ({
   },
 }));
 
-export const selectorGeo = (state: GeoContextType) => ({ coords: state.coords, address: state.address });
-export const selectorGeoCoords = (state: GeoContextType) => ({ coords: state.coords });
-export const selectorGeoAddress = (state: GeoContextType) => ({ address: state.address });
-
-export const useStartGeolocation = () => {
-  const { coords, address, fetchGeolocation, fetchAddress } = useGeoStore();
-
-  useEffect(() => {
-    if (!coords) {
-      fetchGeolocation();
-    }
-  }, [coords, fetchGeolocation]);
-
-  useEffect(() => {
-    if (coords && !address) {
-      fetchAddress(coords.latitude, coords.longitude);
-    }
-  }, [coords, address, fetchAddress]);
-};
+export const selectorGeo = (state: GeoStore) => ({ coords: state.coords, address: state.address });
+export const selectorGeoCoords = (state: GeoStore) => ({ coords: state.coords });
+export const selectorGeoAddress = (state: GeoStore) => ({ address: state.address });

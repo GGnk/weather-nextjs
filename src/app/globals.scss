@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 160, 203, 255;
-    --background-end-rgb: 1, 16, 82;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 160, 60, 255;
+  --background-end-rgb: 1, 16, 82;
 }
 
 body {
@@ -23,10 +15,6 @@ body {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
   .bg-start-rgb {
     background-color: rgb(var(--background-start-rgb));
   }
@@ -45,7 +33,7 @@ body {
     }
 
     & .search-block {
-      @apply hidden md:flex justify-between items-center rounded-md border border-solid border-white text-gray-600 bg-gray-100;
+      @apply hidden md:flex justify-between items-center rounded-md text-[var(--background-start-rgb)] bg-gray-100;
       width: 35.417vw;
       padding: 0 clamp(12px, 0.83vw, 24px);
       height: clamp(42px, 2.917vw, 72px);
@@ -56,12 +44,11 @@ body {
         width: 100%;
 
         input {
+          @apply text-gray-800 placeholder:text-gray-700;
           width: 99%;
           border: none;
-          padding-right: 0;
           background: transparent;
           height: auto;
-          color: #92949f;
           padding: 0;
 
           &:focus,
@@ -74,10 +61,10 @@ body {
       }
 
       .search-btn {
+        @apply text-gray-800 text-2xl;
         flex-shrink: 0;
         border: 0;
         background: transparent;
-        color: #92949f;
       }
     }
   }

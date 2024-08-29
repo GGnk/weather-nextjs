@@ -8,13 +8,20 @@ import { WEATHER_OPTIONS } from '../constants';
 interface WeatherState {
   currentWeather: WeatherResponseWithCurrent | null;
   dailyWeather: WeatherResponseWithDaily | null;
-  fetchCurrentWeather: (coords: GeolocationCoordinates) => void;
-  fetchDailyWeather: (coords: GeolocationCoordinates) => void;
+  isLoadingCurrent: boolean;
+  isLoadingDaily: boolean;
 }
+interface WeatherActions {
+  setLoadingCurrent: (isLoadingCurrent: boolean) => void;
+  setLoadingDaily: (isLoadingDaily: boolean) => void;
+  fetchCurrentWeather: (coords: GeolocationCoordinates) => Promise<void>;
+  fetchDailyWeather: (coords: GeolocationCoordinates) => Promise<void>;
+}
+type WeatherStore = WeatherState & WeatherActions;
 
 const CACHE_DURATION = 1 * 60 * 1000;
 
-const executeIfStale = (request_time: string | undefined, callback: () => void) => {
+const executeIfStale = async (request_time: string | undefined, callback: () => Promise<void>) => {
   if (request_time) {
     const now = new Date();
     const lastRequestTime = new Date(request_time);
@@ -23,33 +30,61 @@ const executeIfStale = (request_time: string | undefined, callback: () => void) 
     if (timeDifference < CACHE_DURATION) return;
   }
 
-  callback();
+  await callback();
 };
 
-export const useWeatherStore = create<WeatherState>((set, get) => ({
+export const useWeatherStore = create<WeatherStore>((set, get) => ({
   currentWeather: null,
   dailyWeather: null,
-  fetchCurrentWeather: (coords) => {
+  isLoadingCurrent: false,
+  isLoadingDaily: false,
+  setLoadingCurrent: (isLoadingCurrent: boolean) => set({ isLoadingCurrent }),
+  setLoadingDaily: (isLoadingDaily: boolean) => set({ isLoadingDaily }),
+  fetchCurrentWeather: async (coords) => {
     const request_time = get().currentWeather?.request_time;
-    executeIfStale(request_time, async () => {
-      const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.CURRENT);
-      console.log('[fetchCurrentWeather] result: ', result);
-      set({ currentWeather: result as WeatherResponseWithCurrent });
-    });
+    try {
+      set({ isLoadingCurrent: true });
+      await executeIfStale(request_time, async () => {
+        const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.CURRENT);
+        console.log('[fetchCurrentWeather] result: ', result);
+        const data = result as WeatherResponseWithCurrent;
+        set({ currentWeather: data });
+      });
+    } catch (error) {
+      console.log('[fetchCurrentWeather] error: ', error);
+    } finally {
+      set({ isLoadingCurrent: false });
+    }
   },
-  fetchDailyWeather: (coords) => {
+  fetchDailyWeather: async (coords) => {
     const request_time = get().dailyWeather?.request_time;
-    executeIfStale(request_time, async () => {
-      const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.DAILY);
-      console.log('[fetchDailyWeather] result: ', result);
-      set({ dailyWeather: result as WeatherResponseWithDaily });
-    });
+    try {
+      set({ isLoadingDaily: true });
+      await executeIfStale(request_time, async () => {
+        const result = await fetchWeatherData(coords.latitude, coords.longitude, WEATHER_OPTIONS.DAILY);
+        console.log('[fetchDailyWeather] result: ', result);
+        const data = result as WeatherResponseWithDaily;
+        set({ dailyWeather: data });
+      });
+    } catch (error) {
+      console.log('[fetchDailyWeather] error: ', error);
+    } finally {
+      set({ isLoadingDaily: false });
+    }
   },
 }));
 
-export const selectorWeatherFecths = (state: WeatherState) => ({
+export const selectorWeatherFecths = (state: WeatherStore) => ({
   fetchCurrentWeather: state.fetchCurrentWeather,
   fetchDailyWeather: state.fetchDailyWeather,
 });
-export const selectorCurrentWeather = (state: WeatherState) => ({ currentWeather: state.currentWeather });
-export const selectorDailyWeather = (state: WeatherState) => ({ dailyWeather: state.dailyWeather });
+export const selectorCurrentWeather = (state: WeatherStore) => ({
+  currentWeather: state.currentWeather,
+  isLoading: state.isLoadingCurrent,
+  setLoading: state.setLoadingCurrent,
+});
+export const selectorDailyWeather = (state: WeatherStore) => ({
+  dailyWeather: state.dailyWeather,
+  isLoading: state.isLoadingDaily,
+  setLoading: state.setLoadingDaily,
+});

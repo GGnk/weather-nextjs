@@ -1,7 +1,6 @@
 'use client';
 
 import { WEATHER_OPTIONS } from '@/shared/constants';
-import { useStartGeolocation } from '@/shared/hooks/geo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -10,7 +9,6 @@ import { IoLocationOutline, IoCalendarOutline } from 'react-icons/io5';
 import { MdOutlineNotificationsActive } from 'react-icons/md';
 
 const Header = () => {
-  useStartGeolocation();
   const pathName = usePathname();
 
   const links = [
@@ -56,15 +54,15 @@ const Header = () => {
           <div className="form-group">
             <input type="search" id="searchInput" name="search" autoComplete="off" placeholder="Search here..." />
           </div>
-          <button type="submit" className="search-btn">
+          <button type="submit" className="search-btn" aria-label="Search">
             <IoIosSearch />
           </button>
         </div>
         <div className="flex space-x-2">
-          <button className="text-2xl">
+          <button className="text-2xl" aria-label="Calendar">
             <IoCalendarOutline />
           </button>
-          <button className="text-2xl">
+          <button className="text-2xl" aria-label="Notifcation">
             <MdOutlineNotificationsActive />
           </button>
         </div>

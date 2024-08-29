@@ -5,12 +5,15 @@ import { selectorCurrentWeather, useWeatherStore } from '@/shared/hooks/weather'
 import CurrentHighlightsBlock from './CurrentHighlightsBlock';
 import CurrentHourlyBlock from './CurrentHourlyBlock';
 import { useShallow } from 'zustand/react/shallow';
+import SkeletonCurrentBlock from './SkeletonCurrentBlock';
 
 const CurrentBlock = () => {
-  const { address } = useGeoStore(selectorGeoAddress);
-  const { currentWeather } = useWeatherStore(useShallow(selectorCurrentWeather));
+  const { address } = useGeoStore(useShallow(selectorGeoAddress));
+  const { currentWeather, isLoading } = useWeatherStore(useShallow(selectorCurrentWeather));
 
-  if (!currentWeather) return <p>Loading...</p>;
+  if (isLoading) return <SkeletonCurrentBlock />;
+  if (!currentWeather) return null;
+
   return (
     <>
       <CurrentHourlyBlock weatherData={currentWeather} addressData={address} />
