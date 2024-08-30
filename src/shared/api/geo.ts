@@ -42,7 +42,7 @@ export const fetchGeoData = async (latitude?: number, longitude?: number, search
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Error during request:', error.message);
-      throw new Error('Error fetching weather data');
+      throw new Error('Error fetching geo data');
     } else {
       console.error('Unknown error:', error);
       throw new Error('Unknown error');

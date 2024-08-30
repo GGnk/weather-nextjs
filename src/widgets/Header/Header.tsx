@@ -13,11 +13,6 @@ const Header = () => {
 
   const links = [
     {
-      name: 'Current',
-      href: `/${WEATHER_OPTIONS.CURRENT}`,
-      isActive: pathName === `/${WEATHER_OPTIONS.CURRENT}`,
-    },
-    {
       name: 'Daily',
       href: `/${WEATHER_OPTIONS.DAILY}`,
       isActive: pathName === `/${WEATHER_OPTIONS.DAILY}`,
