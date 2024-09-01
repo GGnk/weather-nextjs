@@ -1,40 +1,47 @@
 'use client';
 
+import { GEO_QUERY_METHODS } from '@/app/api/geocode/[slug]/types';
 import axios from 'axios';
 
-export interface GeoResponse {
-  latitude: string;
-  longitude: string;
-  display_name: string;
+export type GeoData = {
+  latitude: number;
+  longitude: number;
   address: {
-    neighbourhood: string;
+    display_name: string;
     quarter: string;
     suburb: string;
     city: string;
-    postcode: string;
     country: string;
-    country_code: string;
   };
-}
+};
+export type GeoResponse = GeoData | GeoData[];
 
-export const fetchGeoData = async (latitude?: number, longitude?: number, search?: string): Promise<GeoResponse> => {
-  const baseUrl = '/api/geocode';
-  const isGeoCoords = !!(latitude && longitude);
+type GeoParams = {
+  latitude?: number;
+  longitude?: number;
+  search?: string;
+} & ({ latitude: number; longitude: number } | { search: string });
 
-  let query;
-
-  if (isGeoCoords) {
-    query = new URLSearchParams({
-      latitude: latitude.toString(),
-      longitude: longitude.toString(),
-    });
-  } else {
-    query = new URLSearchParams({
-      q: search || '',
-    });
-  }
-
+type FetchRequest = ({ latitude, longitude, search }: GeoParams) => Promise<GeoResponse>;
+export const fetchGeoData: FetchRequest = async ({ latitude, longitude, search }) => {
   try {
+    if (!(latitude && longitude) && !search?.trim()) {
+      throw new Error('No coordinates or search query provided');
+    }
+
+    const isGeoCoords = !!(latitude && longitude);
+    const baseUrl = `/api/geocode/${isGeoCoords ? GEO_QUERY_METHODS.REVERCE : GEO_QUERY_METHODS.SEARCH}`;
+    const query = new URLSearchParams({
+      ...(isGeoCoords
+        ? {
+            lat: latitude.toString(),
+            lon: longitude.toString(),
+          }
+        : {
+            q: search || '',
+          }),
+    });
+
     const url = `${baseUrl}?${query.toString()}`;
     const response = await axios.get<GeoResponse>(url);
 

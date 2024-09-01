@@ -39,5 +39,6 @@ export const WEATHER_DESCRIPTIONS: WeatherMapping = {
 };
 
 export enum WEATHER_OPTIONS {
+  CURRENT = 'current',
   DAILY = 'daily',
 }

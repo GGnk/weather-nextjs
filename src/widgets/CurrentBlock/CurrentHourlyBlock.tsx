@@ -10,13 +10,11 @@ import { Autoplay } from 'swiper/modules';
 
 import 'swiper/scss';
 import 'swiper/scss/autoplay';
+import type { GeoData } from '@/shared/api/geo';
 
 interface IProps {
   weatherData: WeatherResponseWithCurrent;
-  addressData?: {
-    country: string;
-    city: string;
-  };
+  addressData?: GeoData['address'];
 }
 
 const CurrentHourlyBlock: FC<IProps> = ({ weatherData: { current, hourly }, addressData }) => {
@@ -27,9 +25,7 @@ const CurrentHourlyBlock: FC<IProps> = ({ weatherData: { current, hourly }, addr
       <div className="current_hourly_block__left">
         <span className="text-8xl mx-auto">{weatherDesc.icon}</span>
         <div className="flex flex-col justify-between items-center">
-          <h2 className="text-xl text-blue-950">
-            {addressData?.country}, {addressData?.city}
-          </h2>
+          <h2 className="text-xl text-center">{addressData?.display_name}</h2>
           <p className="mt-2">{weatherDesc.description}</p>
           <span className="text-4xl">{current.temperature}</span>
         </div>

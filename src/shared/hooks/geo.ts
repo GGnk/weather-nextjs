@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchGeoData, GeoResponse } from '../api/geo';
+import { fetchGeoData, GeoData } from '../api/geo';
 import { create } from 'zustand';
 
 export enum LocationStatus {
@@ -12,7 +12,7 @@ export enum LocationStatus {
 
 interface GeoState {
   coords: GeolocationCoordinates | null;
-  address: GeoResponse['address'] | undefined;
+  address: GeoData['address'] | undefined;
   status: LocationStatus;
 }
 interface GeoActions {
@@ -41,7 +41,7 @@ export const useGeoStore = create<GeoStore>((set) => ({
   },
   fetchAddress: async (latitude, longitude) => {
     try {
-      const result = await fetchGeoData(latitude, longitude);
+      const result = (await fetchGeoData({ latitude, longitude })) as GeoData;
       console.log('[fetchGeoData] result: ', result);
       set({ address: result.address });
     } catch (error) {
