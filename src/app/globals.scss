@@ -33,7 +33,7 @@ body {
     }
 
     & .search-block {
-      @apply hidden md:flex justify-between items-center rounded-md text-[var(--background-start-rgb)] bg-gray-100;
+      @apply hidden md:flex justify-between items-center rounded-md text-[var(--background-start-rgb)] bg-gray-100 z-20;
       width: 35.417vw;
       padding: 0 clamp(12px, 0.83vw, 24px);
       height: clamp(42px, 2.917vw, 72px);
@@ -56,6 +56,14 @@ body {
             border: none;
             outline: none;
             background-color: transparent;
+          }
+        }
+
+        ul.search-results {
+          @apply bg-gray-100 w-full absolute top-8 flex flex-col shadow-lg;
+
+          li button {
+            @apply w-full text-left border-b border-gray-300 py-2 px-4;
           }
         }
       }

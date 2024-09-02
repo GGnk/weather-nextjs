@@ -1,21 +1,23 @@
 'use client';
 
 import { WeatherDailyCard } from '@/shared/components/WeatherCards';
-import { useGeoStore, selectorGeoCoords } from '@/shared/hooks/geo';
+import { useGeoStore, selectorGeo } from '@/shared/hooks/geo';
 import { selectorDailyWeather, selectorWeatherFecths, useWeatherStore } from '@/shared/hooks/weather';
 import { useEffect } from 'react';
 
 import { useShallow } from 'zustand/react/shallow';
 
 const WeatherDaily = () => {
-  const { coords } = useGeoStore(useShallow(selectorGeoCoords));
+  const { coords, address } = useGeoStore(useShallow(selectorGeo));
   const { dailyWeather } = useWeatherStore(useShallow(selectorDailyWeather));
   const { fetchDailyWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
 
   useEffect(() => {
     if (!coords) return;
+    if (address) return;
+
     fetchDailyWeather(coords);
-  }, [coords, dailyWeather?.latitude, dailyWeather?.longitude, fetchDailyWeather]);
+  }, [address, coords, fetchDailyWeather]);
 
   if (!dailyWeather) return <p>Loading...</p>;
 

@@ -14,8 +14,8 @@ interface WeatherState {
 interface WeatherActions {
   setLoadingCurrent: (isLoadingCurrent: boolean) => void;
   setLoadingDaily: (isLoadingDaily: boolean) => void;
-  fetchCurrentWeather: (coords: GeolocationCoordinates) => Promise<void>;
-  fetchDailyWeather: (coords: GeolocationCoordinates) => Promise<void>;
+  fetchCurrentWeather: (coords: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>) => Promise<void>;
+  fetchDailyWeather: (coords: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>) => Promise<void>;
 }
 type WeatherStore = WeatherState & WeatherActions;
 

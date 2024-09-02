@@ -4,12 +4,13 @@ import { VscWorkspaceUnknown, VscLoading, VscWorkspaceUntrusted } from 'react-ic
 import { useShallow } from 'zustand/react/shallow';
 
 const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, fetchGeolocation, fetchAddress, coords } = useGeoStore(
+  const { status, fetchGeolocation, fetchAddress, coords, address } = useGeoStore(
     useShallow((state) => ({
       status: state.status,
       fetchGeolocation: state.fetchGeolocation,
       fetchAddress: state.fetchAddress,
       coords: state.coords,
+      address: state.address,
     })),
   );
   const [checkingPermission, setCheckingPermission] = useState(true);
@@ -35,11 +36,11 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   }, [coords, fetchGeolocation]);
 
   useEffect(() => {
-    if (coords) {
-      fetchAddress(coords.latitude, coords.longitude);
-      return;
-    }
-  }, [coords, fetchAddress]);
+    if (!coords) return;
+    if (address) return;
+
+    fetchAddress(coords);
+  }, [address, coords, fetchAddress]);
 
   if (checkingPermission || status === LocationStatus.Approved || coords) {
     return children;

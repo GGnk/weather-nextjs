@@ -1,10 +1,10 @@
 'use client';
 
+import { SearchLocation } from '@/features/SearchLocation';
 import { WEATHER_OPTIONS } from '@/shared/constants';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IoIosSearch } from 'react-icons/io';
 import { IoLocationOutline, IoCalendarOutline } from 'react-icons/io5';
 import { MdOutlineNotificationsActive } from 'react-icons/md';
 
@@ -45,14 +45,7 @@ const Header = () => {
           </Link>
         </div>
         <div className="md:flex gap-3 items-center hidden">{linkElements}</div>
-        <div className="search-block">
-          <div className="form-group">
-            <input type="search" id="searchInput" name="search" autoComplete="off" placeholder="Search here..." />
-          </div>
-          <button type="submit" className="search-btn" aria-label="Search">
-            <IoIosSearch />
-          </button>
-        </div>
+        <SearchLocation />
         <div className="flex space-x-2">
           <button className="text-2xl" aria-label="Calendar">
             <IoCalendarOutline />

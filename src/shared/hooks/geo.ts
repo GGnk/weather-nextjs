@@ -17,7 +17,7 @@ interface GeoState {
 }
 interface GeoActions {
   fetchGeolocation: () => void;
-  fetchAddress: (latitude: number, longitude: number) => Promise<void>;
+  fetchAddress: (coords: { latitude: number; longitude: number }) => Promise<void>;
 }
 type GeoStore = GeoState & GeoActions;
 
@@ -39,9 +39,9 @@ export const useGeoStore = create<GeoStore>((set) => ({
       },
     );
   },
-  fetchAddress: async (latitude, longitude) => {
+  fetchAddress: async (coords) => {
     try {
-      const result = (await fetchGeoData({ latitude, longitude })) as GeoData;
+      const result = (await fetchGeoData(coords)) as GeoData;
       console.log('[fetchGeoData] result: ', result);
       set({ address: result.address });
     } catch (error) {
@@ -53,3 +53,4 @@ export const useGeoStore = create<GeoStore>((set) => ({
 export const selectorGeo = (state: GeoStore) => ({ coords: state.coords, address: state.address });
 export const selectorGeoCoords = (state: GeoStore) => ({ coords: state.coords });
 export const selectorGeoAddress = (state: GeoStore) => ({ address: state.address });
+export const selectorFetchAddress = (state: GeoStore) => ({ fetchAddress: state.fetchAddress });

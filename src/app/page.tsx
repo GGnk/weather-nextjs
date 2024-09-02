@@ -20,20 +20,14 @@ const WeekWeather = dynamic(() => import('@/widgets/WeekWeather').then((item) =>
 export default function Home() {
   const { coords } = useGeoStore(useShallow(selectorGeoCoords));
   const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
-  const { setLoadingCurrent, setLoadingDaily } = useWeatherStore(
-    useShallow((state) => ({ setLoadingCurrent: state.setLoadingCurrent, setLoadingDaily: state.setLoadingDaily })),
-  );
 
   useEffect(() => {
     if (!coords) return;
     const fetchData = async () => {
-      setLoadingCurrent(true);
-      setLoadingDaily(true);
-      await fetchCurrentWeather(coords);
-      await fetchDailyWeather(coords);
+      await Promise.all([fetchCurrentWeather(coords), fetchDailyWeather(coords)]);
     };
     fetchData();
-  }, [coords, fetchCurrentWeather, fetchDailyWeather, setLoadingCurrent, setLoadingDaily]);
+  }, [coords, fetchCurrentWeather, fetchDailyWeather]);
 
   return (
     <GeolocationWrapper>
