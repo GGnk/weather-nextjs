@@ -1,0 +1,369 @@
+[
+  {
+    "Variable": "temperature_2m",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Air temperature at 2 meters above ground"
+  },
+  {
+    "Variable": "relative_humidity_2m",
+    "Valid_time": "Instant",
+    "Unit": "%",
+    "Description": "Relative humidity at 2 meters above ground"
+  },
+  {
+    "Variable": "dew_point_2m",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Dew point temperature at 2 meters above ground"
+  },
+  {
+    "Variable": "apparent_temperature",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Apparent temperature is the perceived feels-like temperature combining wind chill factor, relative humidity and solar radiation"
+  },
+  {
+    "Variable": "pressure_msl",
+    "Valid_time": "Instant",
+    "Unit": "hPa",
+    "Description": "Atmospheric air pressure reduced to mean sea level (msl) or pressure at surface. Typically pressure on mean sea level is used in meteorology. Surface pressure gets lower with increasing elevation."
+  },
+  {
+    "Variable": "surface_pressure",
+    "Valid_time": "Instant",
+    "Unit": "hPa",
+    "Description": "Atmospheric air pressure reduced to mean sea level (msl) or pressure at surface. Typically pressure on mean sea level is used in meteorology. Surface pressure gets lower with increasing elevation."
+  },
+  {
+    "Variable": "cloud_cover",
+    "Valid_time": "Instant",
+    "Unit": "%",
+    "Description": "Total cloud cover as an area fraction"
+  },
+  {
+    "Variable": "cloud_cover_low",
+    "Valid_time": "Instant",
+    "Unit": "%",
+    "Description": "Low level clouds and fog up to 3 km altitude"
+  },
+  {
+    "Variable": "cloud_cover_mid",
+    "Valid_time": "Instant",
+    "Unit": "%",
+    "Description": "Mid level clouds from 3 to 8 km altitude"
+  },
+  {
+    "Variable": "cloud_cover_high",
+    "Valid_time": "Instant",
+    "Unit": "%",
+    "Description": "High level clouds from 8 km altitude"
+  },
+  {
+    "Variable": "wind_speed_10m",
+    "Valid_time": "Instant",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Wind speed at 10 meters above ground. Wind speed on 10 meters is the standard level."
+  },
+  {
+    "Variable": "wind_speed_80m",
+    "Valid_time": "Instant",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Wind speed at 80 meters above ground."
+  },
+  {
+    "Variable": "wind_speed_120m",
+    "Valid_time": "Instant",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Wind speed at 120 meters above ground."
+  },
+  {
+    "Variable": "wind_speed_180m",
+    "Valid_time": "Instant",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Wind speed at 180 meters above ground."
+  },
+  {
+    "Variable": "wind_direction_10m",
+    "Valid_time": "Instant",
+    "Unit": "°",
+    "Description": "Wind direction at 10 meters above ground"
+  },
+  {
+    "Variable": "wind_direction_80m",
+    "Valid_time": "Instant",
+    "Unit": "°",
+    "Description": "Wind direction at 80 meters above ground"
+  },
+  {
+    "Variable": "wind_direction_120m",
+    "Valid_time": "Instant",
+    "Unit": "°",
+    "Description": "Wind direction at 120 meters above ground"
+  },
+  {
+    "Variable": "wind_direction_180m",
+    "Valid_time": "Instant",
+    "Unit": "°",
+    "Description": "Wind direction at 180 meters above ground"
+  },
+  {
+    "Variable": "wind_gusts_10m",
+    "Valid_time": "Preceding hour max",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Gusts at 10 meters above ground as a maximum of the preceding hour"
+  },
+  {
+    "Variable": "shortwave_radiation",
+    "Valid_time": "Preceding hour mean",
+    "Unit": "W/m²",
+    "Description": "Shortwave solar radiation as average of the preceding hour. This is equal to the total global horizontal irradiation"
+  },
+  {
+    "Variable": "direct_radiation",
+    "Valid_time": "Preceding hour mean",
+    "Unit": "W/m²",
+    "Description": "Direct solar radiation as average of the preceding hour on the horizontal plane and the normal plane (perpendicular to the sun)"
+  },
+  {
+    "Variable": "direct_normal_irradiance",
+    "Valid_time": "Preceding hour mean",
+    "Unit": "W/m²",
+    "Description": "Direct solar radiation as average of the preceding hour on the horizontal plane and the normal plane (perpendicular to the sun)"
+  },
+  {
+    "Variable": "diffuse_radiation",
+    "Valid_time": "Preceding hour mean",
+    "Unit": "W/m²",
+    "Description": "Diffuse solar radiation as average of the preceding hour"
+  },
+  {
+    "Variable": "global_tilted_irradiance",
+    "Valid_time": "Preceding hour mean",
+    "Unit": "W/m²",
+    "Description": "Total radiation received on a tilted plane as average of the preceding hour. The calculation assumes a fixed albedo of 20% and an isotropic sky. Specify tilt and azimuth parameter. Tilt ranges from 0° to 90°, typically around 45°. Azimuth should be close to 0° (0° south, -90° east, 90° west). If azimuth is set to 'nan', the calculation assumes a horizontal tracker. If tilt is set to 'nan', it is assumed that the panel has a vertical tracker. If both are set to 'nan', a bi-axial tracker is assumed."
+  },
+  {
+    "Variable": "vapour_pressure_deficit",
+    "Valid_time": "Instant",
+    "Unit": "kPa",
+    "Description": "Vapour Pressure Deficit (VPD) in kilopascal (kPa). For high VPD (>1.6), water transpiration of plants increases. For low VPD (<0.4), transpiration decreases."
+  },
+  {
+    "Variable": "cape",
+    "Valid_time": "Instant",
+    "Unit": "J/kg",
+    "Description": "Convective available potential energy. See Wikipedia for more details."
+  },
+  {
+    "Variable": "evapotranspiration",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "mm (inch)",
+    "Description": "Evapotranspiration from land surface and plants that weather models assume for this location. Available soil water is considered. 1 mm evapotranspiration per hour equals 1 liter of water per square meter."
+  },
+  {
+    "Variable": "et0_fao_evapotranspiration",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "mm (inch)",
+    "Description": "ET₀ Reference Evapotranspiration of a well-watered grass field. Based on FAO-56 Penman-Monteith equations, ET₀ is calculated from temperature, wind speed, humidity, and solar radiation. Unlimited soil water is assumed. ET₀ is commonly used to estimate the required irrigation for plants."
+  },
+  {
+    "Variable": "precipitation",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "mm (inch)",
+    "Description": "Total precipitation (rain, showers, snow) sum of the preceding hour."
+  },
+  {
+    "Variable": "snowfall",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "cm (inch)",
+    "Description": "Snowfall amount of the preceding hour in centimeters. For the water equivalent in millimeters, divide by 7. E.g., 7 cm snow = 10 mm precipitation water equivalent."
+  },
+  {
+    "Variable": "precipitation_probability",
+    "Valid_time": "Preceding hour probability",
+    "Unit": "%",
+    "Description": "Probability of precipitation with more than 0.1 mm in the preceding hour. Probability is based on ensemble weather models with 0.25° (~27 km) resolution. 30 different simulations are computed to better represent future weather conditions."
+  },
+  {
+    "Variable": "rain",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "mm (inch)",
+    "Description": "Rain from large scale weather systems of the preceding hour in millimeters."
+  },
+  {
+    "Variable": "showers",
+    "Valid_time": "Preceding hour sum",
+    "Unit": "mm (inch)",
+    "Description": "Showers from convective precipitation in millimeters from the preceding hour."
+  },
+  {
+    "Variable": "weather_code",
+    "Valid_time": "Instant",
+    "Unit": "WMO code",
+    "Description": "Weather condition as a numeric code. Follows WMO weather interpretation codes."
+  },
+  {
+    "Variable": "snow_depth",
+    "Valid_time": "Instant",
+    "Unit": "meters",
+    "Description": "Snow depth on the ground."
+  },
+  {
+    "Variable": "freezing_level_height",
+    "Valid_time": "Instant",
+    "Unit": "meters",
+    "Description": "Altitude above sea level of the 0°C level."
+  },
+  {
+    "Variable": "visibility",
+    "Valid_time": "Instant",
+    "Unit": "meters",
+    "Description": "Viewing distance in meters. Influenced by low clouds, humidity, and aerosols."
+  },
+  {
+    "Variable": "soil_temperature_0cm",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Temperature in the soil at 0 cm depth. 0 cm is the surface temperature on land or water surface temperature on water."
+  },
+  {
+    "Variable": "soil_temperature_6cm",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Temperature in the soil at 6 cm depth."
+  },
+  {
+    "Variable": "soil_temperature_18cm",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Temperature in the soil at 18 cm depth."
+  },
+  {
+    "Variable": "soil_temperature_54cm",
+    "Valid_time": "Instant",
+    "Unit": "°C (°F)",
+    "Description": "Temperature in the soil at 54 cm depth."
+  },
+  {
+    "Variable": "soil_moisture_0_to_1cm",
+    "Valid_time": "Instant",
+    "Unit": "m³/m³",
+    "Description": "Average soil water content as volumetric mixing ratio at 0-1 cm depth."
+  },
+  {
+    "Variable": "soil_moisture_1_to_3cm",
+    "Valid_time": "Instant",
+    "Unit": "m³/m³",
+    "Description": "Average soil water content as volumetric mixing ratio at 1-3 cm depth."
+  },
+  {
+    "Variable": "soil_moisture_3_to_9cm",
+    "Valid_time": "Instant",
+    "Unit": "m³/m³",
+    "Description": "Average soil water content as volumetric mixing ratio at 3-9 cm depth."
+  },
+  {
+    "Variable": "soil_moisture_9_to_27cm",
+    "Valid_time": "Instant",
+    "Unit": "m³/m³",
+    "Description": "Average soil water content as volumetric mixing ratio at 9-27 cm depth."
+  },
+  {
+    "Variable": "soil_moisture_27_to_81cm",
+    "Valid_time": "Instant",
+    "Unit": "m³/m³",
+    "Description": "Average soil water content as volumetric mixing ratio at 27-81 cm depth."
+  },
+  {
+    "Variable": "is_day",
+    "Valid_time": "Instant",
+    "Unit": "Dimensionless",
+    "Description": "1 if the current time step has daylight, 0 at night."
+  },
+  {
+    "Variable": "temperature_2m_max, temperature_2m_min",
+    "Unit": "°C (°F)",
+    "Description": "Maximum and minimum daily air temperature at 2 meters above ground"
+  },
+  {
+    "Variable": "apparent_temperature_max, apparent_temperature_min",
+    "Unit": "°C (°F)",
+    "Description": "Maximum and minimum daily apparent temperature"
+  },
+  {
+    "Variable": "precipitation_sum",
+    "Unit": "mm",
+    "Description": "Sum of daily precipitation (including rain, showers and snowfall)"
+  },
+  {
+    "Variable": "rain_sum",
+    "Unit": "mm",
+    "Description": "Sum of daily rain"
+  },
+  {
+    "Variable": "showers_sum",
+    "Unit": "mm",
+    "Description": "Sum of daily showers"
+  },
+  {
+    "Variable": "snowfall_sum",
+    "Unit": "cm",
+    "Description": "Sum of daily snowfall"
+  },
+  {
+    "Variable": "precipitation_hours",
+    "Unit": "hours",
+    "Description": "The number of hours with rain"
+  },
+  {
+    "Variable": "precipitation_probability_max, precipitation_probability_min, precipitation_probability_mean",
+    "Unit": "%",
+    "Description": "Probability of precipitation"
+  },
+  {
+    "Variable": "weather_code",
+    "Unit": "WMO code",
+    "Description": "The most severe weather condition on a given day"
+  },
+  {
+    "Variable": "sunrise, sunset",
+    "Unit": "iso8601",
+    "Description": "Sun rise and set times"
+  },
+  {
+    "Variable": "sunshine_duration",
+    "Unit": "seconds",
+    "Description": "The number of seconds of sunshine per day is determined by calculating direct normalized irradiance exceeding 120 W/m², following the WMO definition. Sunshine duration will consistently be less than daylight duration due to dawn and dusk."
+  },
+  {
+    "Variable": "daylight_duration",
+    "Unit": "seconds",
+    "Description": "Number of seconds of daylight per day"
+  },
+  {
+    "Variable": "wind_speed_10m_max, wind_gusts_10m_max",
+    "Unit": "km/h (mph, m/s, knots)",
+    "Description": "Maximum wind speed and gusts on a day"
+  },
+  {
+    "Variable": "wind_direction_10m_dominant",
+    "Unit": "°",
+    "Description": "Dominant wind direction"
+  },
+  {
+    "Variable": "shortwave_radiation_sum",
+    "Unit": "MJ/m²",
+    "Description": "The sum of solar radiation on a given day in Megajoules"
+  },
+  {
+    "Variable": "et0_fao_evapotranspiration",
+    "Unit": "mm",
+    "Description": "Daily sum of ET₀ Reference Evapotranspiration of a well-watered grass field"
+  },
+  {
+    "Variable": "uv_index_max, uv_index_clear_sky_max",
+    "Unit": "Index",
+    "Description": "Daily maximum in UV Index starting from 0. uv_index_clear_sky_max assumes cloud-free conditions. Please follow the official WMO guidelines for ultraviolet index."
+  }
+]

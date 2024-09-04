@@ -1,5 +1,6 @@
 'use client';
 
+import { WeatherDescription } from '@/features/WeatherDescription';
 import { selectorGeoCoords, useGeoStore } from '@/shared/hooks/geo';
 import { selectorWeatherFecths, useWeatherStore } from '@/shared/hooks/weather';
 import { SkeletonCurrentBlock } from '@/widgets/CurrentBlock';
@@ -37,7 +38,8 @@ export default function Home() {
             <CurrentBlock />
           </div>
 
-          <div className="lg:w-1/3">
+          <div className="lg:w-1/3 flex flex-col gap-3">
+            <WeatherDescription />
             <WeekWeather />
           </div>
         </div>

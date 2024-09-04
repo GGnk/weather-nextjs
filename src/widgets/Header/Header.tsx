@@ -38,9 +38,9 @@ const Header = () => {
               <h1 className="text-xl">Weather Forecast</h1>
             </div>
             <div className="flex gap-2">
-              <Image src="next.svg" alt="nextjs" width={50} height={20} />
+              <Image src="./static/svg/next.svg" alt="nextjs" width={50} height={20} />
               &
-              <Image src="vercel.svg" alt="vercel" width={50} height={20} />
+              <Image src="./static/svg/vercel.svg" alt="vercel" width={50} height={20} />
             </div>
           </Link>
         </div>

@@ -15,7 +15,9 @@ const SearchLocation = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
+  const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(
+    useShallow(selectorWeatherFecths),
+  );
   const { fetchAddress } = useGeoStore(useShallow(selectorFetchAddress));
 
   useEffect(() => {
@@ -65,7 +67,22 @@ const SearchLocation = () => {
       latitude: location.latitude,
       longitude: location.longitude,
     };
-    await Promise.all([fetchAddress(coords), fetchCurrentWeather(coords), fetchDailyWeather(coords)]);
+
+    await Promise.all([
+      fetchAddress(coords).then((address) => {
+        if (!address?.display_name) return;
+
+        fetchDescriptionWeather(
+          {
+            coords,
+            locationAdress: address.display_name,
+          },
+          false,
+        );
+      }),
+      fetchCurrentWeather(coords, false),
+      fetchDailyWeather(coords, false),
+    ]);
   };
 
   const findMyLocation = async () => {
@@ -75,9 +92,19 @@ const SearchLocation = () => {
           navigator.geolocation.getCurrentPosition(
             async (geo) => {
               await Promise.all([
-                fetchAddress(geo.coords),
-                fetchCurrentWeather(geo.coords),
-                fetchDailyWeather(geo.coords),
+                fetchAddress(geo.coords).then((address) => {
+                  if (!address?.display_name) return;
+
+                  fetchDescriptionWeather(
+                    {
+                      coords: geo.coords,
+                      locationAdress: address.display_name,
+                    },
+                    false,
+                  );
+                }),
+                fetchCurrentWeather(geo.coords, false),
+                fetchDailyWeather(geo.coords, false),
               ]);
             },
             (error) => {

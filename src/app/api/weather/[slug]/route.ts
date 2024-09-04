@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { WeatherResponseWithCurrent, WeatherResponseWithDaily } from '@/shared/api/weather';
 import { roundToNearestInteger } from '@/shared/utils/numbers';
-import type { WeatherApiResponse, WeatherApiResponseWithCurrent, WeatherApiResponseWithDaily } from './types';
+import type {
+  WeatherApiQueryParameters,
+  WeatherApiResponse,
+  WeatherApiResponseWithCurrent,
+  WeatherApiResponseWithDaily,
+} from './types';
 import { ensureUtcOffset } from '@/shared/utils/time';
 import { WEATHER_OPTIONS } from '@/shared/constants';
+import { createWeatherApiUrlParams } from '../../../../shared/utils/createWeatherApiUrlParams';
 
 type Params = {
   slug: WEATHER_OPTIONS;
@@ -15,21 +21,42 @@ export async function GET(request: Request, context: { params: Params }) {
   const slug = context.params.slug;
 
   const { searchParams } = new URL(request.url);
+  const latitude = Number(searchParams.get('latitude'));
+  const longitude = Number(searchParams.get('longitude'));
+  if (!(latitude && longitude))
+    throw new Error('[Weather] Unable to get location data without all coordinates (latitude and longitude)');
+
   const isDailyWeather = slug === WEATHER_OPTIONS.DAILY;
 
-  const dailyQueryParams = {
-    daily: 'temperature_2m_min,temperature_2m_max,weather_code,wind_speed_10m_max',
-    forecast_days: '14',
+  const dailyQueryParams: Omit<WeatherApiQueryParameters, 'latitude' | 'longitude'> = {
+    daily: ['temperature_2m_min', 'temperature_2m_max', 'weather_code', 'wind_speed_10m_max'],
+    forecast_days: 14,
   };
 
-  const currentQueryParams = {
-    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,pressure_msl,wind_speed_10m',
-    hourly: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',
-    forecast_hours: '12',
+  const currentQueryParams: Omit<WeatherApiQueryParameters, 'latitude' | 'longitude'> = {
+    current: [
+      'temperature_2m',
+      'relative_humidity_2m',
+      'apparent_temperature',
+      'is_day',
+      'weather_code',
+      'pressure_msl',
+      'wind_speed_10m',
+    ],
+    hourly: [
+      'temperature_2m',
+      'relative_humidity_2m',
+      'apparent_temperature',
+      'precipitation',
+      'weather_code',
+      'wind_speed_10m',
+    ],
+    forecast_hours: 12,
   };
-  const query = new URLSearchParams({
-    latitude: searchParams.get('latitude') || '',
-    longitude: searchParams.get('longitude') || '',
+
+  const requestParams: WeatherApiQueryParameters = {
+    latitude,
+    longitude,
     ...(isDailyWeather ? dailyQueryParams : currentQueryParams),
     temperature_unit: 'celsius',
     wind_speed_unit: 'ms',
@@ -37,7 +64,8 @@ export async function GET(request: Request, context: { params: Params }) {
     timeformat: 'iso8601',
     // All timestamps are returned as local-time and data is returned starting at 00:00 local-time
     timezone: 'GMT',
-  });
+  };
+  const query = createWeatherApiUrlParams(requestParams);
 
   try {
     const response = await fetch(`${API_URL}?${query.toString()}`);

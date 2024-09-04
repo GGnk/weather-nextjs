@@ -10,5 +10,6 @@
   },
   "search.exclude": {
     "package-lock.json": true
-  }
+  },
+  "svg.preview.background": "transparent"
 }
