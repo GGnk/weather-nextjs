@@ -1,12 +1,12 @@
 import { Typewriter } from '@/shared/components/Typewriter';
-import { useGeoStore, selectorGeo } from '@/shared/hooks/geo';
-import { useWeatherStore, selectorDescriptionWeather } from '@/shared/hooks/weather';
+import { useGeoStore, selectorGeo } from '@/entities/geolocation';
+import { useWeatherStore, selectorDescriptionWeather } from '@/entities/weather';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import SkeletonDescriptionWeather from './SkeletonWeekWeather';
 
 const WeatherDescription = () => {
-  const { coords, address } = useGeoStore(useShallow(selectorGeo));
+  const { coords, address } = useGeoStore(selectorGeo);
   const { descriptionWeather, fetchDescriptionWeather, isLoadingDescription } = useWeatherStore(
     useShallow(selectorDescriptionWeather),
   );

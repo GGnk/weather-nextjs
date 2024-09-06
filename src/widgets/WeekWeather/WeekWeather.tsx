@@ -1,5 +1,5 @@
 import { WEATHER_OPTIONS } from '@/shared/constants';
-import { useWeatherStore, selectorDailyWeather } from '@/shared/hooks/weather';
+import { useWeatherStore, selectorDailyWeather } from '@/entities/weather';
 import { getWeatherDescription } from '@/shared/utils/getWeatherDescription';
 import { DateFormat, formatDate } from '@/shared/utils/time';
 import Link from 'next/link';

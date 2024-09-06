@@ -1,15 +1,14 @@
 'use client';
 
 import { WeatherDescription } from '@/features/WeatherDescription';
-import { selectorGeoCoords, useGeoStore } from '@/shared/hooks/geo';
-import { selectorWeatherFecths, useWeatherStore } from '@/shared/hooks/weather';
+import { useGeoStore } from '@/entities/geolocation';
+import { selectorWeatherFecths, useWeatherStore } from '@/entities/weather';
 import { SkeletonCurrentBlock } from '@/widgets/CurrentBlock';
 
 import { GeolocationWrapper } from '@/widgets/GeolocationWrapper';
 import { SkeletonWeekWeather } from '@/widgets/WeekWeather';
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
 const CurrentBlock = dynamic(() => import('@/widgets/CurrentBlock').then((item) => item.CurrentBlock), {
   loading: SkeletonCurrentBlock,
@@ -19,11 +18,12 @@ const WeekWeather = dynamic(() => import('@/widgets/WeekWeather').then((item) =>
 });
 
 export default function Home() {
-  const { coords } = useGeoStore(useShallow(selectorGeoCoords));
-  const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(useShallow(selectorWeatherFecths));
+  const coords = useGeoStore.use.coords();
+  const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(selectorWeatherFecths);
 
   useEffect(() => {
     if (!coords) return;
+
     const fetchData = async () => {
       await Promise.all([fetchCurrentWeather(coords), fetchDailyWeather(coords)]);
     };

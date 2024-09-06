@@ -1,14 +1,14 @@
 'use client';
 
-import { selectorGeoAddress, useGeoStore } from '@/shared/hooks/geo';
-import { selectorCurrentWeather, useWeatherStore } from '@/shared/hooks/weather';
+import { useGeoStore } from '@/entities/geolocation';
+import { selectorCurrentWeather, useWeatherStore } from '@/entities/weather';
 import CurrentHighlightsBlock from './CurrentHighlightsBlock';
 import CurrentHourlyBlock from './CurrentHourlyBlock';
 import { useShallow } from 'zustand/react/shallow';
 import SkeletonCurrentBlock from './SkeletonCurrentBlock';
 
 const CurrentBlock = () => {
-  const { address } = useGeoStore(useShallow(selectorGeoAddress));
+  const address = useGeoStore.use.address();
   const { currentWeather, isLoading } = useWeatherStore(useShallow(selectorCurrentWeather));
 
   if (isLoading) return <SkeletonCurrentBlock />;

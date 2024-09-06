@@ -1,7 +1,5 @@
-'use client';
-
 import { GEO_QUERY_METHODS } from '@/app/api/geocode/[slug]/types';
-import axios from 'axios';
+import { apiClient } from '../utils/apiClient';
 
 export type GeoData = {
   latitude: number;
@@ -42,17 +40,8 @@ export const fetchGeoData: FetchRequest = async ({ latitude, longitude, search }
           }),
     });
 
-    const url = `${baseUrl}?${query.toString()}`;
-    const response = await axios.get<GeoResponse>(url);
-
-    return response.data;
+    return await apiClient.get<GeoResponse>(`${baseUrl}?${query.toString()}`);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error during request:', error.message);
-      throw new Error('Error fetching geo data');
-    } else {
-      console.error('Unknown error:', error);
-      throw new Error('Unknown error');
-    }
+    throw error;
   }
 };

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { WEATHER_OPTIONS } from '../constants';
+import { apiClient } from '../utils/apiClient';
 
 interface WeatherResponseBase {
   request_time: string;
@@ -41,23 +41,33 @@ export type WeatherResponseWithDaily = WeatherResponseBase & {
 export type WeatherResponse = WeatherResponseWithCurrent | WeatherResponseWithDaily;
 
 export const fetchWeatherData = async (latitude: number, longitude: number, slug: WEATHER_OPTIONS) => {
-  const baseUrl = `/api/weather/${slug}`;
-  const query = new URLSearchParams({
-    latitude: latitude.toString(),
-    longitude: longitude.toString(),
-  });
   try {
-    const url = `${baseUrl}?${query.toString()}`;
-    const response = await axios.get<WeatherResponse>(url);
-
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error during request:', error.message);
-      throw new Error('Error fetching weather data');
-    } else {
-      console.error('Unknown error:', error);
-      throw new Error('Unknown error');
+    if (!(latitude && longitude) && !slug) {
+      throw new Error('No coordinates or slug query provided');
     }
+
+    const baseUrl = `/api/weather/${slug}`;
+    const query = new URLSearchParams({
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+    });
+
+    return await apiClient.get<WeatherResponse>(`${baseUrl}?${query.toString()}`);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchWeatherDescription = async (data: {
+  coords: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>;
+  locationAdress: string;
+}) => {
+  try {
+    return await apiClient.post<{
+      text: string | null;
+      request_time?: string;
+    }>('/api/weather/description', data);
+  } catch (error) {
+    throw error;
   }
 };

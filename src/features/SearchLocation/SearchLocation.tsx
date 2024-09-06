@@ -3,9 +3,9 @@ import { useDebounce } from '@/shared/hooks/useDebounce';
 import { fetchGeoData, GeoData } from '@/shared/api/geo';
 import { VscLoading } from 'react-icons/vsc';
 import { MdMyLocation } from 'react-icons/md';
-import { useWeatherStore, selectorWeatherFecths } from '@/shared/hooks/weather';
+import { useWeatherStore, selectorWeatherFecths } from '@/entities/weather';
 import { useShallow } from 'zustand/react/shallow';
-import { selectorFetchAddress, useGeoStore } from '@/shared/hooks/geo';
+import { useGeoStore } from '@/entities/geolocation';
 
 const SearchLocation = () => {
   const [isActivateSearch, setisActivateSearch] = useState(true);
@@ -18,7 +18,8 @@ const SearchLocation = () => {
   const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(
     useShallow(selectorWeatherFecths),
   );
-  const { fetchAddress } = useGeoStore(useShallow(selectorFetchAddress));
+
+  const fetchAddress = useGeoStore.use.fetchAddress();
 
   useEffect(() => {
     if (!isActivateSearch) return;

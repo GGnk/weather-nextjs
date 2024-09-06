@@ -1,13 +1,13 @@
-import { useGeoStore, LocationStatus } from '@/shared/hooks/geo';
+import { useGeoStore, LocationStatus } from '@/entities/geolocation';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { VscWorkspaceUnknown, VscLoading, VscWorkspaceUntrusted } from 'react-icons/vsc';
 import { useShallow } from 'zustand/react/shallow';
 
 const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, fetchGeolocation, fetchAddress, coords, address } = useGeoStore(
+  const { status, getCurrentGeolocation, fetchAddress, coords, address } = useGeoStore(
     useShallow((state) => ({
       status: state.status,
-      fetchGeolocation: state.fetchGeolocation,
+      getCurrentGeolocation: state.getCurrentGeolocation,
       fetchAddress: state.fetchAddress,
       coords: state.coords,
       address: state.address,
@@ -24,7 +24,7 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         if (result.state === 'granted') {
-          fetchGeolocation();
+          getCurrentGeolocation();
         } else if (result.state === 'denied') {
           useGeoStore.setState({ status: LocationStatus.Denied });
         }
@@ -33,7 +33,7 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     } else {
       setCheckingPermission(false);
     }
-  }, [coords, fetchGeolocation]);
+  }, [coords, getCurrentGeolocation]);
 
   useEffect(() => {
     if (!coords) return;
@@ -60,7 +60,7 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         {status === LocationStatus.Idle && (
           <div>
             <p>Нажмите, чтобы запросить разрешение на геолокацию.</p>
-            <button className="bg-end-rgb text-white p-2 rounded-md" onClick={fetchGeolocation}>
+            <button className="bg-end-rgb text-white p-2 rounded-md" onClick={getCurrentGeolocation}>
               Запросить геолокацию
             </button>
           </div>
