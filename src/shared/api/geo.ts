@@ -11,6 +11,7 @@ export type GeoData = {
     city: string;
     country: string;
   };
+  clientIp: string | null;
 };
 export type GeoResponse = GeoData | GeoData[];
 
@@ -20,23 +21,21 @@ type GeoParams = {
   search?: string;
 } & ({ latitude: number; longitude: number } | { search: string });
 
-type FetchRequest = ({ latitude, longitude, search }: GeoParams) => Promise<GeoResponse>;
-export const fetchGeoData: FetchRequest = async ({ latitude, longitude, search }) => {
+type FetchRequest = (options?: GeoParams) => Promise<GeoResponse>;
+export const fetchGeoData: FetchRequest = async (options) => {
   try {
-    if (!(latitude && longitude) && !search?.trim()) {
-      throw new Error('No coordinates or search query provided');
-    }
+    const isCoords = !!(options?.latitude && options?.longitude);
+    const isGeoRequest = isCoords || !options?.search?.trim();
 
-    const isGeoCoords = !!(latitude && longitude);
-    const baseUrl = `/api/geocode/${isGeoCoords ? GEO_QUERY_METHODS.REVERCE : GEO_QUERY_METHODS.SEARCH}`;
+    const baseUrl = `/api/geocode/${isGeoRequest ? GEO_QUERY_METHODS.REVERCE : GEO_QUERY_METHODS.SEARCH}`;
     const query = new URLSearchParams({
-      ...(isGeoCoords
-        ? {
-            lat: latitude.toString(),
-            lon: longitude.toString(),
+      ...(isGeoRequest
+        ? isCoords && {
+            lat: options.latitude!.toString(),
+            lon: options.longitude!.toString(),
           }
         : {
-            q: search || '',
+            q: options?.search || '',
           }),
     });
 

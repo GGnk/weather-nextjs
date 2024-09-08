@@ -11,13 +11,17 @@ export enum LocationStatus {
 }
 
 interface GeoState {
-  coords: GeolocationCoordinates | null;
+  coords:
+    | (Pick<GeolocationCoordinates, 'latitude' | 'longitude'> & {
+        clientIp?: string | null;
+      })
+    | undefined;
   address: GeoData['address'] | undefined;
   status: LocationStatus;
 }
 interface GeoActions {
   getCurrentGeolocation: () => void;
-  fetchAddress: (coords: { latitude: number; longitude: number }) => Promise<GeoData['address'] | undefined>;
+  fetchAddress: (coords?: { latitude: number; longitude: number }) => Promise<GeoData['address'] | undefined>;
 }
 type GeoStore = GeoState & GeoActions;
 
@@ -27,14 +31,20 @@ const useGeoStore = create<GeoStore>()(
   devtools(
     persist(
       (set) => ({
-        coords: null,
+        coords: undefined,
         address: undefined,
         status: LocationStatus.Idle,
         getCurrentGeolocation: () => {
           set({ status: LocationStatus.Requesting });
           navigator.geolocation.getCurrentPosition(
             (geo) => {
-              set({ coords: geo.coords, status: LocationStatus.Approved });
+              set({
+                coords: {
+                  latitude: geo.coords.latitude,
+                  longitude: geo.coords.longitude,
+                },
+                status: LocationStatus.Approved,
+              });
             },
             (error) => {
               if (error.code === error.PERMISSION_DENIED) {
@@ -48,7 +58,15 @@ const useGeoStore = create<GeoStore>()(
           try {
             const result = (await fetchGeoData(coords)) as GeoData;
             console.log('[fetchGeoData] result: ', result);
-            set({ address: result.address });
+
+            set({
+              address: result.address,
+              coords: {
+                latitude: result.latitude,
+                longitude: result.longitude,
+                clientIp: result.clientIp,
+              },
+            });
             return result.address;
           } catch (error) {
             console.error('Error fetching address:', error);

@@ -1,22 +1,17 @@
 import { GeoResponse } from '@/shared/api/geo';
 import { GEO_QUERY_METHODS, IGeoAPIResponse } from './types';
+import { CoordsViaIp } from './ipAddress';
 
 interface IReverseParams {
   defaultQuery: Record<string, string>;
   url: string;
-  requestUrl: string;
+  coords: CoordsViaIp;
 }
-export const getReverseUrlWithQuery = async ({ defaultQuery, url, requestUrl }: IReverseParams) => {
-  const { searchParams } = new URL(requestUrl);
-  const lat = searchParams.get('lat');
-  const lon = searchParams.get('lon');
-  if (!(lat && lon))
-    throw new Error('[Reverse] Unable to get location data without all coordinates (latitude and longitude)');
-
+export const getReverseUrlWithQuery = async ({ defaultQuery, url, coords }: IReverseParams) => {
   const queryParams = new URLSearchParams({
     ...defaultQuery,
-    lat,
-    lon,
+    lat: `${coords.lat}`,
+    lon: `${coords.lon}`,
     limit: '1',
   });
   const baseUrl = `${url}/${GEO_QUERY_METHODS.REVERCE}?${queryParams.toString()}`;
@@ -38,6 +33,7 @@ export const getReverseUrlWithQuery = async ({ defaultQuery, url, requestUrl }: 
         quarter: results[0].quarter,
         suburb: results[0].suburb,
       },
+      clientIp: coords.clientIp,
     };
 
     return data;

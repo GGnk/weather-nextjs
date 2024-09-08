@@ -28,7 +28,7 @@ const WeatherDescription = () => {
       <div>
         <h2 className="text-lg font-semibold mb-4">Weather Description</h2>
       </div>
-      <Typewriter text={descriptionWeather.text} />
+      <Typewriter text={descriptionWeather.text} speed={15} />
     </div>
   );
 };

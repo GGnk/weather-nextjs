@@ -1,5 +1,5 @@
 import { useGeoStore, LocationStatus } from '@/entities/geolocation';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { VscWorkspaceUnknown, VscLoading, VscWorkspaceUntrusted } from 'react-icons/vsc';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -13,14 +13,8 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
       address: state.address,
     })),
   );
-  const [checkingPermission, setCheckingPermission] = useState(true);
 
   useEffect(() => {
-    if (coords) {
-      setCheckingPermission(false);
-      return;
-    }
-
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         if (result.state === 'granted') {
@@ -28,23 +22,20 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         } else if (result.state === 'denied') {
           useGeoStore.setState({ status: LocationStatus.Denied });
         }
-        setCheckingPermission(false);
       });
-    } else {
-      setCheckingPermission(false);
     }
-  }, [coords, getCurrentGeolocation]);
+  }, [getCurrentGeolocation]);
 
   useEffect(() => {
-    if (!coords) return;
-    if (address) return;
+    if (address || status === LocationStatus.Requesting) return;
 
-    fetchAddress(coords);
-  }, [address, coords, fetchAddress]);
+    if (status === LocationStatus.Denied) {
+      fetchAddress(coords);
+      return;
+    }
 
-  if (checkingPermission || status === LocationStatus.Approved || coords) {
-    return children;
-  }
+    fetchAddress();
+  }, [address, coords, fetchAddress, status]);
 
   const Icon =
     status === LocationStatus.Idle
@@ -53,27 +44,35 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         ? VscLoading
         : VscWorkspaceUntrusted;
 
+  const isShowGeoRequest =
+    status === LocationStatus.Idle || status === LocationStatus.Requesting || status === LocationStatus.Denied;
   return (
-    <div className="md:w-4/5 lg:w-1/3 mx-auto p-3 bg-start-rgb rounded-md">
-      <div className={`flex gap-3 items-center text-bg-end-rgb`}>
-        <Icon className={`h-8 w-8 flex-shrink-0 ${status === LocationStatus.Requesting ? 'animate-spin' : ''}`} />
-        {status === LocationStatus.Idle && (
-          <div>
-            <p>Нажмите, чтобы запросить разрешение на геолокацию.</p>
-            <button className="bg-end-rgb text-white p-2 rounded-md" onClick={getCurrentGeolocation}>
-              Запросить геолокацию
-            </button>
+    <>
+      {isShowGeoRequest && (
+        <div className="w-full mx-auto p-3 bg-start-rgb rounded-md">
+          <div className={`flex gap-3 items-center text-bg-end-rgb`}>
+            <Icon className={`h-8 w-8 flex-shrink-0 ${status === LocationStatus.Requesting ? 'animate-spin' : ''}`} />
+            {coords?.clientIp && status === LocationStatus.Idle && (
+              <div>
+                <p>Текущая геолокация определена по вашему IP адресу: {coords?.clientIp}</p>
+                <button className="bg-end-rgb text-white p-2 rounded-md" onClick={getCurrentGeolocation}>
+                  Запросить мою геолокацию
+                </button>
+              </div>
+            )}
+            {status === LocationStatus.Requesting && <p>Запрашиваем разрешение на использование геолокации...</p>}
+            {status === LocationStatus.Denied && (
+              <div>
+                <h2 className="text-lg">Вы отклонили доступ к геолокации.</h2>
+                <p>Чтобы использовать эту функцию, включите доступ к геолокации в настройках браузера.</p>
+              </div>
+            )}
           </div>
-        )}
-        {status === LocationStatus.Requesting && <p>Запрашиваем разрешение на использование геолокации...</p>}
-        {status === LocationStatus.Denied && (
-          <div>
-            <h2 className="text-lg">Вы отклонили доступ к геолокации.</h2>
-            <p>Чтобы использовать эту функцию, включите доступ к геолокации в настройках браузера.</p>
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+
+      {children}
+    </>
   );
 };
 

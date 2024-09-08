@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { GeoResponse } from '@/shared/api/geo';
 import { GEO_QUERY_METHODS } from './types';
 import { getReverseUrlWithQuery } from './reverse';
 import { getSearchUrlWithQuery } from './search';
+import { CoordsViaIp, getCoordsViaIp } from './ipAddress';
 
 const API_KEY = process.env.GEOAPIFY_API_KEY as string;
 const API_URL = process.env.GEOAPIFY_API_URL as string;
@@ -11,7 +12,7 @@ type ParamType = {
   slug: GEO_QUERY_METHODS;
 };
 
-export async function GET(request: Request, { params }: { params: ParamType }) {
+export async function GET(request: NextRequest, { params }: { params: ParamType }) {
   const slug = params.slug;
 
   try {
@@ -27,7 +28,15 @@ export async function GET(request: Request, { params }: { params: ParamType }) {
     };
     let data: GeoResponse;
     if (slug === GEO_QUERY_METHODS.REVERCE) {
-      data = await getReverseUrlWithQuery(params);
+      const { searchParams } = new URL(params.requestUrl);
+      const lat = Number(searchParams.get('lat'));
+      const lon = Number(searchParams.get('lon'));
+      let coords: CoordsViaIp = { clientIp: null, lat, lon };
+      if (!(lat && lon)) {
+        coords = await getCoordsViaIp(request);
+      }
+
+      data = await getReverseUrlWithQuery({ ...params, coords });
     } else {
       data = await getSearchUrlWithQuery(params);
     }
