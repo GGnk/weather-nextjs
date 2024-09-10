@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: { params: ParamType 
       const { searchParams } = new URL(params.requestUrl);
       const lat = Number(searchParams.get('lat'));
       const lon = Number(searchParams.get('lon'));
-      let coords: CoordsViaIp = { clientIp: null, lat, lon };
+      let coords: CoordsViaIp = { ipAddress: null, lat, lon };
       if (!(lat && lon)) {
         coords = await getCoordsViaIp(request);
       }

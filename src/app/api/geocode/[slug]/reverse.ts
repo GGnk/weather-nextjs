@@ -33,7 +33,7 @@ export const getReverseUrlWithQuery = async ({ defaultQuery, url, coords }: IRev
         quarter: results[0].quarter,
         suburb: results[0].suburb,
       },
-      clientIp: coords.clientIp,
+      ipAddress: coords.ipAddress,
     };
 
     return data;

@@ -11,7 +11,7 @@ export type GeoData = {
     city: string;
     country: string;
   };
-  clientIp?: string | null;
+  ipAddress?: string | null;
 };
 export type GeoResponse = GeoData | GeoData[];
 

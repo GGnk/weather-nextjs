@@ -76,6 +76,8 @@ const useWeatherStore = create<WeatherStore>()(
         setLoadingCurrent: (isLoadingCurrent) => set({ isLoadingCurrent }),
         setLoadingDaily: (isLoadingDaily) => set({ isLoadingDaily }),
         fetchCurrentWeather: async (coords, isCheckRequestTime = true) => {
+          if (get().isLoadingCurrent) return;
+
           const request_time = get().currentWeather?.request_time;
           try {
             set({ isLoadingCurrent: true });
@@ -96,6 +98,8 @@ const useWeatherStore = create<WeatherStore>()(
           }
         },
         fetchDailyWeather: async (coords, isCheckRequestTime = true) => {
+          if (get().isLoadingDaily) return;
+
           const request_time = get().dailyWeather?.request_time;
           try {
             set({ isLoadingDaily: true });
@@ -116,6 +120,8 @@ const useWeatherStore = create<WeatherStore>()(
           }
         },
         fetchDescriptionWeather: async (data, isCheckRequestTime = true) => {
+          if (get().isLoadingDescription) return;
+
           const request_time = get().descriptionWeather?.request_time;
           try {
             set({ isLoadingDescription: true });

@@ -13,15 +13,15 @@ export enum LocationStatus {
 interface GeoState {
   coords:
     | (Pick<GeolocationCoordinates, 'latitude' | 'longitude'> & {
-        clientIp?: string | null;
+        ipAddress?: string | null;
       })
     | undefined;
   address: GeoData['address'] | undefined;
   status: LocationStatus;
 }
 interface GeoActions {
-  getCurrentGeolocation: () => void;
-  fetchAddress: (coords?: { latitude: number; longitude: number }) => Promise<GeoData['address'] | undefined>;
+  getCurrentGeolocation: (calback?: (coords: GeolocationCoordinates) => void) => void;
+  fetchAddress: (coords?: { latitude: number; longitude: number }) => Promise<GeoData | undefined>;
 }
 type GeoStore = GeoState & GeoActions;
 
@@ -34,25 +34,37 @@ const useGeoStore = create<GeoStore>()(
         coords: undefined,
         address: undefined,
         status: LocationStatus.Idle,
-        getCurrentGeolocation: () => {
-          set({ status: LocationStatus.Requesting });
-          navigator.geolocation.getCurrentPosition(
-            (geo) => {
-              set({
-                coords: {
-                  latitude: geo.coords.latitude,
-                  longitude: geo.coords.longitude,
-                },
-                status: LocationStatus.Approved,
-              });
-            },
-            (error) => {
-              if (error.code === error.PERMISSION_DENIED) {
-                set({ status: LocationStatus.Denied });
+        getCurrentGeolocation: (callback) => {
+          if (navigator.permissions) {
+            navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+              if (result.state === 'granted' || result.state === 'prompt') {
+                set({ status: LocationStatus.Requesting });
+                navigator.geolocation.getCurrentPosition(
+                  (geo) => {
+                    set({
+                      coords: {
+                        latitude: geo.coords.latitude,
+                        longitude: geo.coords.longitude,
+                      },
+                      status: LocationStatus.Approved,
+                    });
+
+                    callback?.(geo.coords);
+                  },
+                  (error) => {
+                    if (error.code === error.PERMISSION_DENIED) {
+                      set({ status: LocationStatus.Denied });
+                    }
+                    console.error(error);
+                  },
+                );
+              } else if (result.state === 'denied') {
+                useGeoStore.setState({ status: LocationStatus.Denied });
               }
-              console.error(error);
-            },
-          );
+            });
+          } else {
+            useGeoStore.setState({ status: LocationStatus.Denied });
+          }
         },
         fetchAddress: async (coords) => {
           try {
@@ -64,10 +76,10 @@ const useGeoStore = create<GeoStore>()(
               coords: {
                 latitude: result.latitude,
                 longitude: result.longitude,
-                clientIp: result.clientIp,
+                ipAddress: result.ipAddress,
               },
             });
-            return result.address;
+            return result;
           } catch (error) {
             console.error('Error fetching address:', error);
           }

@@ -18,7 +18,7 @@ const SearchLocation = () => {
   const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(
     useShallow(selectorWeatherFecths),
   );
-
+  const getCurrentGeolocation = useGeoStore.use.getCurrentGeolocation();
   const fetchAddress = useGeoStore.use.fetchAddress();
 
   useEffect(() => {
@@ -60,61 +60,39 @@ const SearchLocation = () => {
     setSearchTerm(event.target.value);
   };
 
+  const getWeatherData = async (coords?: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>) => {
+    fetchAddress(coords).then(async (geo) => {
+      if (!geo?.address?.display_name) return;
+      const currentCoords = {
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+      };
+      await fetchDescriptionWeather(
+        {
+          coords: currentCoords,
+          locationAdress: geo.address.display_name,
+        },
+        false,
+      );
+
+      await fetchCurrentWeather(currentCoords, false);
+      await fetchDailyWeather(currentCoords, false);
+    });
+  };
+
   const handleClick = async (location: GeoData) => {
     setisActivateSearch(false);
     setSearchTerm('');
     setSearchResults([]);
-    const coords = {
+
+    await getWeatherData({
       latitude: location.latitude,
       longitude: location.longitude,
-    };
-
-    await Promise.all([
-      fetchAddress(coords).then((address) => {
-        if (!address?.display_name) return;
-
-        fetchDescriptionWeather(
-          {
-            coords,
-            locationAdress: address.display_name,
-          },
-          false,
-        );
-      }),
-      fetchCurrentWeather(coords, false),
-      fetchDailyWeather(coords, false),
-    ]);
+    });
   };
 
   const findMyLocation = async () => {
-    if (navigator.permissions) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        if (result.state === 'granted') {
-          navigator.geolocation.getCurrentPosition(
-            async (geo) => {
-              await Promise.all([
-                fetchAddress(geo.coords).then((address) => {
-                  if (!address?.display_name) return;
-
-                  fetchDescriptionWeather(
-                    {
-                      coords: geo.coords,
-                      locationAdress: address.display_name,
-                    },
-                    false,
-                  );
-                }),
-                fetchCurrentWeather(geo.coords, false),
-                fetchDailyWeather(geo.coords, false),
-              ]);
-            },
-            (error) => {
-              console.error(error);
-            },
-          );
-        }
-      });
-    }
+    getCurrentGeolocation(getWeatherData);
   };
 
   return (
