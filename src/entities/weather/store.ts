@@ -6,6 +6,7 @@ import { create } from 'zustand';
 import { WEATHER_OPTIONS } from '@/shared/constants';
 import { createSelectors } from '../createSelectors';
 import { devtools, persist } from 'zustand/middleware';
+import { useGeoStore } from '../geolocation';
 
 interface WeatherState {
   currentWeather: WeatherResponseWithCurrent | null;
@@ -78,7 +79,13 @@ const useWeatherStore = create<WeatherStore>()(
         fetchCurrentWeather: async (coords, isCheckRequestTime = true) => {
           if (get().isLoadingCurrent) return;
 
-          const request_time = get().currentWeather?.request_time;
+          let request_time;
+          const latitude = get().currentWeather?.latitude;
+          const longitude = get().currentWeather?.longitude;
+          if (coords.latitude === latitude && coords.longitude === longitude) {
+            request_time = get().currentWeather?.request_time;
+          }
+
           try {
             set({ isLoadingCurrent: true });
             await executeIfStale(
@@ -88,6 +95,17 @@ const useWeatherStore = create<WeatherStore>()(
                 console.log('[fetchCurrentWeather] result: ', result);
                 const data = result as WeatherResponseWithCurrent;
                 set({ currentWeather: data });
+
+                useGeoStore.setState(
+                  {
+                    coords: {
+                      ...useGeoStore.getState().coords,
+                      latitude: data.latitude,
+                      longitude: data.longitude,
+                    },
+                  },
+                  false,
+                );
               },
               isCheckRequestTime,
             );
@@ -100,7 +118,13 @@ const useWeatherStore = create<WeatherStore>()(
         fetchDailyWeather: async (coords, isCheckRequestTime = true) => {
           if (get().isLoadingDaily) return;
 
-          const request_time = get().dailyWeather?.request_time;
+          let request_time;
+          const latitude = get().dailyWeather?.latitude;
+          const longitude = get().dailyWeather?.longitude;
+          if (coords.latitude === latitude && coords.longitude === longitude) {
+            request_time = get().dailyWeather?.request_time;
+          }
+
           try {
             set({ isLoadingDaily: true });
             await executeIfStale(
@@ -110,6 +134,17 @@ const useWeatherStore = create<WeatherStore>()(
                 console.log('[fetchDailyWeather] result: ', result);
                 const data = result as WeatherResponseWithDaily;
                 set({ dailyWeather: data });
+
+                useGeoStore.setState(
+                  {
+                    coords: {
+                      ...useGeoStore.getState().coords,
+                      latitude: data.latitude,
+                      longitude: data.longitude,
+                    },
+                  },
+                  false,
+                );
               },
               isCheckRequestTime,
             );

@@ -1,49 +1,20 @@
-import { useGeoStore, LocationStatus } from '@/entities/geolocation';
-import { useWeatherStore, selectorWeatherFecths } from '@/entities/weather';
-import React, { PropsWithChildren, useCallback, useEffect } from 'react';
+import { useGeoStore, LocationStatus, initializeLocation, requestAndUpdateGeoAddress } from '@/entities/geolocation';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { VscWorkspaceUnknown, VscLoading, VscWorkspaceUntrusted } from 'react-icons/vsc';
 import { useShallow } from 'zustand/react/shallow';
 
 const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, getCurrentGeolocation, fetchAddress, coords, address } = useGeoStore(
+  const { status, coords } = useGeoStore(
     useShallow((state) => ({
       status: state.status,
-      getCurrentGeolocation: state.getCurrentGeolocation,
-      fetchAddress: state.fetchAddress,
       coords: state.coords,
-      address: state.address,
     })),
   );
 
-  const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(selectorWeatherFecths);
-
-  const getWeatherData = useCallback(
-    async (coords?: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>) => {
-      fetchAddress(coords).then(async (geo) => {
-        if (!geo) return;
-
-        const currentCoords = {
-          latitude: geo.latitude,
-          longitude: geo.longitude,
-        };
-
-        await fetchDescriptionWeather({
-          coords: currentCoords,
-          locationAdress: geo.address.display_name,
-        });
-
-        await fetchCurrentWeather(currentCoords);
-        await fetchDailyWeather(currentCoords);
-      });
-    },
-    [fetchAddress, fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather],
-  );
-
   useEffect(() => {
-    if (address || status === LocationStatus.Requesting || status === LocationStatus.Denied) return;
-
-    getWeatherData(coords);
-  }, [address, coords, getWeatherData, status]);
+    initializeLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const Icon =
     status === LocationStatus.Idle
@@ -52,19 +23,16 @@ const GeolocationWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         ? VscLoading
         : VscWorkspaceUntrusted;
 
-  const handleClick = () => {
-    getCurrentGeolocation(getWeatherData);
-  };
   return (
     <>
       {coords?.ipAddress && status !== LocationStatus.Approved && (
         <div className="w-full mx-auto p-3 bg-start-rgb rounded-md">
           <div className={`flex gap-3 items-center text-bg-end-rgb`}>
             <Icon className={`h-8 w-8 flex-shrink-0 ${status === LocationStatus.Requesting ? 'animate-spin' : ''}`} />
-            {status === LocationStatus.Idle && (
+            {(status === LocationStatus.Idle || status === LocationStatus.Promt) && (
               <div>
                 <p>Текущая геолокация определена по IP адресу: {coords?.ipAddress}</p>
-                <button className="bg-end-rgb text-white p-2 rounded-md" onClick={handleClick}>
+                <button className="bg-end-rgb text-white p-2 rounded-md" onClick={requestAndUpdateGeoAddress}>
                   Запросить мою геолокацию
                 </button>
               </div>

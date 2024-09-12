@@ -1,10 +1,12 @@
-import { fetchGeoData, GeoData } from '@/shared/api/geo';
+import { GeoData } from '@/shared/api/geo';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { createSelectors } from '../createSelectors';
+import { requestCurrentGeolocation } from '@/shared/utils/requestCurrentGeolocation';
 
 export enum LocationStatus {
   Idle = 'idle',
+  Promt = 'promt',
   Requesting = 'requesting',
   Approved = 'approved',
   Denied = 'denied',
@@ -20,8 +22,7 @@ interface GeoState {
   status: LocationStatus;
 }
 interface GeoActions {
-  getCurrentGeolocation: (calback?: (coords: GeolocationCoordinates) => void) => void;
-  fetchAddress: (coords?: { latitude: number; longitude: number }) => Promise<GeoData | undefined>;
+  requestAndSetGeolocation: () => Promise<GeolocationCoordinates>;
 }
 type GeoStore = GeoState & GeoActions;
 
@@ -34,54 +35,15 @@ const useGeoStore = create<GeoStore>()(
         coords: undefined,
         address: undefined,
         status: LocationStatus.Idle,
-        getCurrentGeolocation: (callback) => {
-          if (navigator.permissions) {
-            navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-              if (result.state === 'granted' || result.state === 'prompt') {
-                set({ status: LocationStatus.Requesting });
-                navigator.geolocation.getCurrentPosition(
-                  (geo) => {
-                    set({
-                      coords: {
-                        latitude: geo.coords.latitude,
-                        longitude: geo.coords.longitude,
-                      },
-                      status: LocationStatus.Approved,
-                    });
-
-                    callback?.(geo.coords);
-                  },
-                  (error) => {
-                    if (error.code === error.PERMISSION_DENIED) {
-                      set({ status: LocationStatus.Denied });
-                    }
-                    console.error(error);
-                  },
-                );
-              } else if (result.state === 'denied') {
-                useGeoStore.setState({ status: LocationStatus.Denied });
-              }
-            });
-          } else {
-            useGeoStore.setState({ status: LocationStatus.Denied });
-          }
-        },
-        fetchAddress: async (coords) => {
+        requestAndSetGeolocation: async () => {
           try {
-            const result = (await fetchGeoData(coords)) as GeoData;
-            console.log('[fetchGeoData] result: ', result);
-
-            set({
-              address: result.address,
-              coords: {
-                latitude: result.latitude,
-                longitude: result.longitude,
-                ipAddress: result.ipAddress,
-              },
-            });
-            return result;
+            set({ status: LocationStatus.Requesting });
+            const coords = await requestCurrentGeolocation();
+            set({ status: LocationStatus.Approved });
+            return coords;
           } catch (error) {
-            console.error('Error fetching address:', error);
+            set({ status: LocationStatus.Denied });
+            throw error;
           }
         },
       }),

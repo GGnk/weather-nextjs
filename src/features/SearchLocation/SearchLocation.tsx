@@ -5,7 +5,7 @@ import { VscLoading } from 'react-icons/vsc';
 import { MdMyLocation } from 'react-icons/md';
 import { useWeatherStore, selectorWeatherFecths } from '@/entities/weather';
 import { useShallow } from 'zustand/react/shallow';
-import { useGeoStore } from '@/entities/geolocation';
+import { requestAndUpdateGeoAddress, updateGeoAddress } from '@/entities/geolocation';
 
 const SearchLocation = () => {
   const [isActivateSearch, setisActivateSearch] = useState(true);
@@ -18,8 +18,6 @@ const SearchLocation = () => {
   const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(
     useShallow(selectorWeatherFecths),
   );
-  const getCurrentGeolocation = useGeoStore.use.getCurrentGeolocation();
-  const fetchAddress = useGeoStore.use.fetchAddress();
 
   useEffect(() => {
     if (!isActivateSearch) return;
@@ -60,39 +58,28 @@ const SearchLocation = () => {
     setSearchTerm(event.target.value);
   };
 
-  const getWeatherData = async (coords?: Pick<GeolocationCoordinates, 'latitude' | 'longitude'>) => {
-    fetchAddress(coords).then(async (geo) => {
-      if (!geo?.address?.display_name) return;
-      const currentCoords = {
-        latitude: geo.latitude,
-        longitude: geo.longitude,
-      };
-      await fetchDescriptionWeather(
-        {
-          coords: currentCoords,
-          locationAdress: geo.address.display_name,
-        },
-        false,
-      );
-
-      await fetchCurrentWeather(currentCoords, false);
-      await fetchDailyWeather(currentCoords, false);
-    });
-  };
-
   const handleClick = async (location: GeoData) => {
     setisActivateSearch(false);
     setSearchTerm('');
     setSearchResults([]);
 
-    await getWeatherData({
+    const coords = {
       latitude: location.latitude,
       longitude: location.longitude,
-    });
-  };
+    };
 
-  const findMyLocation = async () => {
-    getCurrentGeolocation(getWeatherData);
+    await Promise.all([
+      updateGeoAddress(coords),
+      fetchCurrentWeather(coords, false),
+      fetchDailyWeather(coords, false),
+      fetchDescriptionWeather(
+        {
+          coords,
+          locationAdress: location.address.display_name,
+        },
+        false,
+      ),
+    ]);
   };
 
   return (
@@ -118,7 +105,13 @@ const SearchLocation = () => {
           </ul>
         )}
       </div>
-      <button type="submit" className="search-btn" aria-label="Search" onClick={findMyLocation} disabled={isLoading}>
+      <button
+        type="submit"
+        className="search-btn"
+        aria-label="Search"
+        onClick={requestAndUpdateGeoAddress}
+        disabled={isLoading}
+      >
         {isLoading ? <VscLoading className="h-8 w-8 flex-shrink-0 animate-spin" /> : <MdMyLocation />}
       </button>
     </div>

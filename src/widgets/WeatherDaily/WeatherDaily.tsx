@@ -1,20 +1,20 @@
 'use client';
 
 import { WeatherDailyCard } from '@/shared/components/WeatherCards';
-import { useGeoStore } from '@/entities/geolocation';
+import { selectorGeo, useGeoStore } from '@/entities/geolocation';
 import { selectorDailyWeather, selectorWeatherFecths, useWeatherStore } from '@/entities/weather';
 import { useEffect } from 'react';
 
 const WeatherDaily = () => {
-  const coords = useGeoStore.use.coords();
+  const { coords, address } = useGeoStore(selectorGeo);
   const { dailyWeather } = useWeatherStore(selectorDailyWeather);
   const { fetchDailyWeather } = useWeatherStore(selectorWeatherFecths);
 
   useEffect(() => {
-    if (!coords) return;
+    if (!(coords && address)) return;
 
     fetchDailyWeather(coords);
-  }, [coords, fetchDailyWeather]);
+  }, [address, coords, fetchDailyWeather]);
 
   if (!dailyWeather) return <p>Loading...</p>;
 

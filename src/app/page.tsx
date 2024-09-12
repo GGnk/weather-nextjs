@@ -1,7 +1,7 @@
 'use client';
 
 import { WeatherDescription } from '@/features/WeatherDescription';
-import { useGeoStore } from '@/entities/geolocation';
+import { selectorGeo, useGeoStore } from '@/entities/geolocation';
 import { selectorWeatherFecths, useWeatherStore } from '@/entities/weather';
 import { SkeletonCurrentBlock } from '@/widgets/CurrentBlock';
 
@@ -18,17 +18,24 @@ const WeekWeather = dynamic(() => import('@/widgets/WeekWeather').then((item) =>
 });
 
 export default function Home() {
-  const coords = useGeoStore.use.coords();
-  const { fetchCurrentWeather, fetchDailyWeather } = useWeatherStore(selectorWeatherFecths);
+  const { coords, address } = useGeoStore(selectorGeo);
+  const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(selectorWeatherFecths);
 
   useEffect(() => {
-    if (!coords) return;
+    if (!(coords && address)) return;
 
     const fetchData = async () => {
-      await Promise.all([fetchCurrentWeather(coords), fetchDailyWeather(coords)]);
+      await Promise.all([
+        fetchCurrentWeather(coords),
+        fetchDailyWeather(coords),
+        fetchDescriptionWeather({
+          coords,
+          locationAdress: address.display_name,
+        }),
+      ]);
     };
     fetchData();
-  }, [coords, fetchCurrentWeather, fetchDailyWeather]);
+  }, [address, coords, fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather]);
 
   return (
     <GeolocationWrapper>

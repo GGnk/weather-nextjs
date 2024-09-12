@@ -27,7 +27,7 @@ export const getReverseUrlWithQuery = async ({ defaultQuery, url, coords }: IRev
       latitude: results[0].lat,
       longitude: results[0].lon,
       address: {
-        display_name: `${!!results[0].quarter ? results[0].quarter + ', ' : ''}${results[0].city}, ${results[0].country}`,
+        display_name: results[0].formatted,
         city: results[0].city,
         country: results[0].country,
         quarter: results[0].quarter,
