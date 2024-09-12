@@ -2,7 +2,7 @@
 
 import { WeatherDescription } from '@/features/WeatherDescription';
 import { selectorGeo, useGeoStore } from '@/entities/geolocation';
-import { selectorWeatherFecths, useWeatherStore } from '@/entities/weather';
+import { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } from '@/entities/weather';
 import { SkeletonCurrentBlock } from '@/widgets/CurrentBlock';
 
 import { GeolocationWrapper } from '@/widgets/GeolocationWrapper';
@@ -19,7 +19,6 @@ const WeekWeather = dynamic(() => import('@/widgets/WeekWeather').then((item) =>
 
 export default function Home() {
   const { coords, address } = useGeoStore(selectorGeo);
-  const { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } = useWeatherStore(selectorWeatherFecths);
 
   useEffect(() => {
     if (!(coords && address)) return;
@@ -35,7 +34,7 @@ export default function Home() {
       ]);
     };
     fetchData();
-  }, [address, coords, fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather]);
+  }, [address, coords]);
 
   return (
     <GeolocationWrapper>

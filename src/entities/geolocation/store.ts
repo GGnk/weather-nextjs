@@ -26,8 +26,6 @@ interface GeoActions {
 }
 type GeoStore = GeoState & GeoActions;
 
-const isDev = process.env.NODE_ENV === 'development';
-
 const useGeoStore = create<GeoStore>()(
   devtools(
     persist(
@@ -61,7 +59,7 @@ const useGeoStore = create<GeoStore>()(
     {
       name: 'Weather-GeoStore',
       store: 'GeoStore',
-      enabled: isDev,
+      enabled: process.env.NODE_ENV === 'development',
     },
   ),
 );

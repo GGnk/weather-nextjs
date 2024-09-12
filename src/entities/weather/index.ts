@@ -3,5 +3,6 @@ export {
   selectorCurrentWeather,
   selectorDailyWeather,
   selectorDescriptionWeather,
-  selectorWeatherFecths,
 } from './store';
+
+export { fetchCurrentWeather, fetchDailyWeather, fetchDescriptionWeather } from './action';
